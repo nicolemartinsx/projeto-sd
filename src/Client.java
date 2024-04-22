@@ -92,14 +92,16 @@ public class Client extends javax.swing.JFrame {
     private void btnAvancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancarActionPerformed
         Socket server = null;
         try {
-            server = new Socket("127.0.0.1",Integer.parseInt(txtPorta.getText()));
+            server = new Socket("127.0.0.1", Integer.parseInt(txtPorta.getText()));
         } catch (IOException e) {
             System.err.println("Couldn't get I/O");
             System.exit(1);
         }
         this.dispose();
-        Login login = new Login(server);
-        login.setVisible(true);
+//        Login login = new Login(server);
+//        login.setVisible(true);
+        Cadastro cadastro = new Cadastro(server);
+        cadastro.setVisible(true);
     }//GEN-LAST:event_btnAvancarActionPerformed
 
     private void txtPortaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaActionPerformed
