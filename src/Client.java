@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -86,20 +87,14 @@ public class Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAvancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancarActionPerformed
-        try {                                           
-            Socket server = null;
-            try {
-                server = new Socket("127.0.0.1", Integer.parseInt(txtPorta.getText()));
-            } catch (IOException e) {
-                System.err.println("Couldn't get I/O");
-                System.exit(1);
-            }
+        try {
+            Socket server = new Socket("127.0.0.1", Integer.parseInt(txtPorta.getText()));
             server.setSoTimeout(1000);
             SocketModel.getInstance().setSocket(server);
             this.dispose();
             new Login();
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar a porta, tente outra", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAvancarActionPerformed
 
@@ -137,7 +132,7 @@ public class Client extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-            new Client().setVisible(true);
+                new Client().setVisible(true);
             }
         });
     }

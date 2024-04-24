@@ -16,7 +16,8 @@ public class Main {
         Client client = new Client();
         client.setVisible(true);
 
-        Server.main(args);
+        String[] serverArgs = {"22000"};
+        Server.main(serverArgs);
     }
 
 }

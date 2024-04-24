@@ -25,9 +25,19 @@ public class Server extends Thread {
 
         ServerSocket serverSocket = null;
 
+        Integer porta;
+        if (args.length == 1) {
+            porta = Integer.valueOf(args[0]);
+        } else {
+            System.out.println("Porta: ");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            porta = Integer.valueOf(br.readLine());
+        }
+
         try {
-            serverSocket = new ServerSocket(22000);
+            serverSocket = new ServerSocket(porta);
             try {
+                System.out.println("Accepting new connections.");
                 while (true) {
                     new Server(serverSocket.accept());
                 }
@@ -178,7 +188,7 @@ public class Server extends Thread {
                                     try (PreparedStatement psd = conn.prepareStatement(deleteQuery)) {
                                         psd.setString(1, requisicao.getString("email"));
                                         psd.executeUpdate();
-                                        
+
                                         resposta.put("status", 201);
                                     }
                                 } else {
