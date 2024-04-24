@@ -1,23 +1,83 @@
 
-import java.net.Socket;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.json.JSONObject;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author mrtnsx
  */
 public class Cadastro extends javax.swing.JFrame {
-
-    /**
-     * Creates new form Cadastro2
-     */
-    public Cadastro(Socket server) {
+    private boolean atualizacao = false;
+    
+    public Cadastro(boolean atualizacao) {
+        this.atualizacao = atualizacao;
+        this.setVisible(true);
+        
+        new Thread(() -> {
+            String inputLine = null;
+            while (this.isVisible()) {
+                try {
+                    inputLine = SocketModel.getInstance().getIn().readLine();
+                } catch (SocketTimeoutException ex) {
+                    if (this.isVisible()) {
+                        continue;
+                    } else {
+                        break;
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Cadastro recebeu: " + inputLine);
+                JSONObject mensagem = new JSONObject(inputLine);
+                switch (mensagem.getString("operacao")) {
+                    case "cadastrarCandidato" -> {
+                        switch (mensagem.getInt("status")) {
+                            case 201 -> {
+                                AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setEmail(txtEmail.getText());
+                                model.setToken(mensagem.getString("token"));
+                                JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                this.dispose();
+                                Inicio inicio = new Inicio();
+                                inicio.setVisible(true);
+                            }
+                            default ->
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    case "atualizarCandidato" -> {
+                        switch (mensagem.getInt("status")) {
+                            case 201 -> {
+                                JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                this.dispose();
+                            }
+                            default ->
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    
+                    default ->
+                        throw new AssertionError();
+                }
+            }
+        }).start();
         initComponents();
+        
+        if (atualizacao) {
+            txtEmail.setEnabled(false);
+            txtEmail.setText(AuthenticationModel.getInstance().getEmail());
+            jLabel2.setText("Atualização de cadastro");
+            btnCadastrar.setText("Atualizar cadastro");
+            this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        }
     }
 
     /**
@@ -39,13 +99,10 @@ public class Cadastro extends javax.swing.JFrame {
         txtNome = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setLocation(new java.awt.Point(200, 200));
 
         btnCadastrar.setText("Realizar cadastro");
-        btnCadastrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadastrarActionPerformed(evt);
-            }
-        });
+        btnCadastrar.addActionListener(this::btnCadastrarActionPerformed);
 
         jLabel2.setText("Cadastro de candidato");
 
@@ -55,19 +112,15 @@ public class Cadastro extends javax.swing.JFrame {
 
         jLabel5.setText("Email");
 
-        txtNome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNomeActionPerformed(evt);
-            }
-        });
+        txtNome.addActionListener(this::txtNomeActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -75,10 +128,11 @@ public class Cadastro extends javax.swing.JFrame {
                         .addGap(144, 144, 144))
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
-                    .addComponent(txtPassword)
-                    .addComponent(txtEmail)
-                    .addComponent(txtNome))
-                .addContainerGap(99, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                        .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtNome, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,24 +157,32 @@ public class Cadastro extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         String nome = txtNome.getText();
         String email = txtEmail.getText();
         String senha = new String(txtPassword.getPassword());
-
-        System.out.println(nome);
+        
         if (nome.length() < 6 || nome.length() > 30) {
-            JOptionPane.showMessageDialog(null, "Nome deve conter entre 6 e 30 caracteres!");
+            JOptionPane.showMessageDialog(null, "Nome deve conter entre 6 e 30 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (email.length() < 7 || email.length() > 50) {
-            JOptionPane.showMessageDialog(null, "Email deve conter entre 7 e 50 caracteres!");
+            JOptionPane.showMessageDialog(null, "Email deve conter entre 7 e 50 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (!email.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$")) {
-            JOptionPane.showMessageDialog(null, "Email inválido!");
+            JOptionPane.showMessageDialog(null, "Email inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (senha.length() < 3 || senha.length() > 8) {
-            JOptionPane.showMessageDialog(null, "Senha deve conter entre 3 e 8 caracteres!");
+            JOptionPane.showMessageDialog(null, "Senha deve conter entre 3 e 8 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (!senha.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!");
+            JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JSONObject message = new JSONObject();
+            message.put("operacao", this.atualizacao ? "atualizarCandidato" : "cadastrarCandidato");
+            message.put("nome", nome);
+            message.put("email", email);
+            message.put("senha", senha);
+            
+            SocketModel.getInstance().getOut().println(message);
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 

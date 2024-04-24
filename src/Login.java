@@ -1,39 +1,65 @@
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author mrtnsx
  */
 public class Login extends javax.swing.JFrame {
-    private Socket server = null;
-    private PrintWriter out = null;
-    
+
     /**
      * Creates new form HelloUI
-     * @param server
      */
-    public Login(Socket server) {
-        try {
-            this.server = server;
-            out = new PrintWriter(server.getOutputStream(), true);
-            initComponents();
-        } catch (IOException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public Login() {
+        this.setVisible(true);
+
+        new Thread(() -> {
+            String inputLine = null;
+            while (this.isVisible()) {
+                try {
+                    inputLine = SocketModel.getInstance().getIn().readLine();
+                } catch (SocketTimeoutException ex) {
+                    if (this.isVisible()) {
+                        continue;
+                    } else {
+                        break;
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                System.out.println("Login recebeu: " + inputLine);
+                JSONObject mensagem = new JSONObject(inputLine);
+                switch (mensagem.getString("operacao")) {
+                    case "loginCandidato" -> {
+                        switch (mensagem.getInt("status")) {
+                            case 200 -> {
+                                AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setEmail(txtLogin.getText());
+                                model.setToken(mensagem.getString("token"));
+                                this.dispose();
+                                Inicio inicio = new Inicio();
+                                inicio.setVisible(true);
+                            }
+                            default ->
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+
+                    default ->
+                        throw new AssertionError();
+                }
+            }
+        }).start();
+        initComponents();
     }
 
     /**
@@ -54,7 +80,7 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setLocation(new java.awt.Point(700, 450));
+        setLocation(new java.awt.Point(0, 0));
         setResizable(false);
 
         jLabel4.setText("Login");
@@ -82,7 +108,7 @@ public class Login extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -94,12 +120,12 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(txtLogin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(24, 24, 24)
                 .addComponent(jLabel2)
                 .addGap(39, 39, 39)
                 .addComponent(jLabel4)
@@ -113,32 +139,37 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin)
                     .addComponent(jButton1))
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         String login = txtLogin.getText();
         String password = new String(txtPassword.getPassword());
-        
-        if (login.isEmpty() || password.isEmpty()) {
-            return;
+
+        if (login.length() < 7 || login.length() > 50) {
+            JOptionPane.showMessageDialog(null, "Email deve conter entre 7 e 50 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (!login.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$")) {
+            JOptionPane.showMessageDialog(null, "Email inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (password.length() < 3 || password.length() > 8) {
+            JOptionPane.showMessageDialog(null, "Senha deve conter entre 3 e 8 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (!password.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JSONObject message = new JSONObject();
+            message.put("operacao", "loginCandidato");
+            message.put("email", login);
+            message.put("senha", password);
+            SocketModel.getInstance().getOut().println(message);
         }
-        
-        JSONObject message = new JSONObject();
-        message.put("operacao", "loginCandidato");
-        message.put("email", login);
-        message.put("senha", password);
-        
-        out.println(message);
     }//GEN-LAST:event_btnLoginActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
-        Cadastro cadastro = new Cadastro(server);
-        cadastro.setVisible(true);
+        new Cadastro(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
