@@ -33,13 +33,15 @@ public class Client extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         btnAvancar = new javax.swing.JButton();
+        txtIP = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         txtPorta = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(700, 450));
         setResizable(false);
 
-        jLabel1.setText("Insira a porta");
+        jLabel1.setText("IP");
 
         btnAvancar.setText("Avançar");
         btnAvancar.addActionListener(new java.awt.event.ActionListener() {
@@ -47,6 +49,15 @@ public class Client extends javax.swing.JFrame {
                 btnAvancarActionPerformed(evt);
             }
         });
+
+        txtIP.setText("127.0.0.1");
+        txtIP.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtIPActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Porta");
 
         txtPorta.setText("22000");
         txtPorta.addActionListener(new java.awt.event.ActionListener() {
@@ -62,9 +73,14 @@ public class Client extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnAvancar)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(txtPorta, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addGap(166, 166, 166)))
+                    .addComponent(btnAvancar)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(txtIP, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                             .addComponent(jLabel1)
                             .addGap(166, 166, 166))))
@@ -75,11 +91,15 @@ public class Client extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(36, 36, 36)
                 .addComponent(jLabel1)
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtIP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPorta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnAvancar)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
@@ -88,15 +108,19 @@ public class Client extends javax.swing.JFrame {
 
     private void btnAvancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancarActionPerformed
         try {
-            Socket server = new Socket("127.0.0.1", Integer.parseInt(txtPorta.getText()));
+            Socket server = new Socket(txtIP.getText(), Integer.parseInt(txtPorta.getText()));
             server.setSoTimeout(1000);
             SocketModel.getInstance().setSocket(server);
             this.dispose();
             new Login();
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Não foi possível conectar a porta, tente outra", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao servidor, tente novamente", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAvancarActionPerformed
+
+    private void txtIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtIPActionPerformed
 
     private void txtPortaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaActionPerformed
         // TODO add your handling code here:
@@ -140,6 +164,8 @@ public class Client extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAvancar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField txtIP;
     private javax.swing.JTextField txtPorta;
     // End of variables declaration//GEN-END:variables
 }
