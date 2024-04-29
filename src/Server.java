@@ -37,23 +37,23 @@ public class Server extends Thread {
         try {
             serverSocket = new ServerSocket(porta);
             try {
-                System.out.println("Accepting new connections.");
+                System.out.println("Esperando conexão...");
                 while (true) {
                     new Server(serverSocket.accept());
                 }
             } catch (IOException e) {
-                System.err.println("Accept failed.");
+                System.err.println("Erro na conexão");
                 System.exit(1);
             }
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 22000.");
+            System.err.println("Não foi possível escutar na porta: "+porta);
             System.exit(1);
 
         } finally {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                System.err.println("Could not close port: 10008.");
+                System.err.println("Não foi possível fechar a porta: "+porta);
                 System.exit(1);
             }
         }
@@ -68,6 +68,7 @@ public class Server extends Thread {
 
     @Override
     public void run() {
+        System.out.println("Cliente conectado");
         try {
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(

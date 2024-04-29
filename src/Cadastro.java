@@ -6,14 +6,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-/**
- *
- * @author mrtnsx
- */
 public class Cadastro extends javax.swing.JFrame {
 
     private boolean atualizacao = false;
@@ -80,7 +72,7 @@ public class Cadastro extends javax.swing.JFrame {
         if (atualizacao) {
             txtEmail.setEnabled(false);
             txtEmail.setText(AuthenticationModel.getInstance().getEmail());
-            jLabel2.setText("Atualização de cadastro");
+            labelCadastro.setText("Atualização de cadastro");
             btnCadastrar.setText("Atualizar cadastro");
             this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         }
@@ -96,7 +88,7 @@ public class Cadastro extends javax.swing.JFrame {
     private void initComponents() {
 
         btnCadastrar = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        labelCadastro = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
@@ -110,15 +102,13 @@ public class Cadastro extends javax.swing.JFrame {
         btnCadastrar.setText("Realizar cadastro");
         btnCadastrar.addActionListener(this::btnCadastrarActionPerformed);
 
-        jLabel2.setText("Cadastro de candidato");
+        labelCadastro.setText("Cadastro de candidato");
 
         jLabel4.setText("Nome");
 
         jLabel1.setText("Senha");
 
         jLabel5.setText("Email");
-
-        txtNome.addActionListener(this::txtNomeActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -128,7 +118,7 @@ public class Cadastro extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
+                    .addComponent(labelCadastro)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnCadastrar)
                         .addGap(144, 144, 144))
@@ -144,7 +134,7 @@ public class Cadastro extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(jLabel2)
+                .addComponent(labelCadastro)
                 .addGap(24, 24, 24)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -192,16 +182,12 @@ public class Cadastro extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
-    private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNomeActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel labelCadastro;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtNome;
     private javax.swing.JPasswordField txtPassword;

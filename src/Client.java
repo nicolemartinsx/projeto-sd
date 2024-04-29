@@ -5,14 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-/**
- *
- * @author mrtnsx
- */
 public class Client extends javax.swing.JFrame {
 
     /**
@@ -51,20 +43,10 @@ public class Client extends javax.swing.JFrame {
         });
 
         txtIP.setText("127.0.0.1");
-        txtIP.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtIPActionPerformed(evt);
-            }
-        });
 
         jLabel2.setText("Porta");
 
-        txtPorta.setText("22000");
-        txtPorta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPortaActionPerformed(evt);
-            }
-        });
+        txtPorta.setText("22222");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -118,14 +100,6 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAvancarActionPerformed
 
-    private void txtIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIPActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIPActionPerformed
-
-    private void txtPortaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPortaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPortaActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -153,7 +127,6 @@ public class Client extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Client().setVisible(true);

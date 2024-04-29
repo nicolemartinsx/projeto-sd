@@ -86,9 +86,6 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="127.0.0.1"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtIPActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -97,11 +94,8 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtPorta">
       <Properties>
-        <Property name="text" type="java.lang.String" value="22000"/>
+        <Property name="text" type="java.lang.String" value="22222"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtPortaActionPerformed"/>
-      </Events>
     </Component>
   </SubComponents>
 </Form>
