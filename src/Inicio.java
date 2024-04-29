@@ -36,42 +36,50 @@ public class Inicio extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Inicio recebeu: " + inputLine);
+                System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
                 switch (mensagem.getString("operacao")) {
-                    case "visualizarCandidato" -> {
+                    case "visualizarCandidato":
                         switch (mensagem.getInt("status")) {
-                            case 201 -> {
+                            case 201:
                                 JOptionPane.showMessageDialog(null,
                                         "Nome: " + mensagem.getString("nome") + "\n"
                                         + "Email: " + AuthenticationModel.getInstance().getEmail() + "\n"
                                         + "Senha: " + mensagem.getString("senha")
                                 );
-                            }
-                            default ->
+                                break;
+
+                            default:
                                 JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+
                         }
-                    }
-                    case "apagarCandidato" -> {
+                        break;
+
+                    case "apagarCandidato":
                         switch (mensagem.getInt("status")) {
-                            case 201 -> {
+                            case 201:
                                 JOptionPane.showMessageDialog(null, "Cadastro apagado com sucesso");
                                 this.dispose();
                                 new Login();
-                            }
-                            default ->
+                                break;
+
+                            default:
                                 JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+
                         }
-                    }
-                    case "logout" -> {
+                        break;
+
+                    case "logout":
                         AuthenticationModel model = AuthenticationModel.getInstance();
                         model.setToken(null);
                         model.setEmail(null);
                         this.dispose();
                         new Login();
-                    }
+                        break;
 
-                    default ->
+                    default:
                         throw new AssertionError();
                 }
             }
@@ -230,6 +238,7 @@ public class Inicio extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "visualizarCandidato");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -245,6 +254,7 @@ public class Inicio extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "logout");
         requisicao.put("token", AuthenticationModel.getInstance().getToken());
+        System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -252,6 +262,7 @@ public class Inicio extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "apagarCandidato");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_jButton3ActionPerformed
 

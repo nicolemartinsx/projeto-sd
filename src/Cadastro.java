@@ -15,12 +15,13 @@ import org.json.JSONObject;
  * @author mrtnsx
  */
 public class Cadastro extends javax.swing.JFrame {
+
     private boolean atualizacao = false;
-    
+
     public Cadastro(boolean atualizacao) {
         this.atualizacao = atualizacao;
         this.setVisible(true);
-        
+
         new Thread(() -> {
             String inputLine = null;
             while (this.isVisible()) {
@@ -35,12 +36,12 @@ public class Cadastro extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Cadastro recebeu: " + inputLine);
+                System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
                 switch (mensagem.getString("operacao")) {
-                    case "cadastrarCandidato" -> {
+                    case "cadastrarCandidato":
                         switch (mensagem.getInt("status")) {
-                            case 201 -> {
+                            case 201:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
                                 model.setEmail(txtEmail.getText());
                                 model.setToken(mensagem.getString("token"));
@@ -48,29 +49,34 @@ public class Cadastro extends javax.swing.JFrame {
                                 this.dispose();
                                 Inicio inicio = new Inicio();
                                 inicio.setVisible(true);
-                            }
-                            default ->
+                                break;
+
+                            default:
                                 JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+
                         }
-                    }
-                    case "atualizarCandidato" -> {
+                        break;
+
+                    case "atualizarCandidato":
                         switch (mensagem.getInt("status")) {
-                            case 201 -> {
+                            case 201:
                                 JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                                 this.dispose();
-                            }
-                            default ->
+                                break;
+                            default:
                                 JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
                         }
-                    }
-                    
-                    default ->
+                        break;
+
+                    default:
                         throw new AssertionError();
                 }
             }
         }).start();
         initComponents();
-        
+
         if (atualizacao) {
             txtEmail.setEnabled(false);
             txtEmail.setText(AuthenticationModel.getInstance().getEmail());
@@ -164,7 +170,7 @@ public class Cadastro extends javax.swing.JFrame {
         String nome = txtNome.getText();
         String email = txtEmail.getText();
         String senha = new String(txtPassword.getPassword());
-        
+
         if (nome.length() < 6 || nome.length() > 30) {
             JOptionPane.showMessageDialog(null, "Nome deve conter entre 6 e 30 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (email.length() < 7 || email.length() > 50) {
@@ -181,7 +187,7 @@ public class Cadastro extends javax.swing.JFrame {
             message.put("nome", nome);
             message.put("email", email);
             message.put("senha", senha);
-            
+            System.out.println("Cliente enviou: " + message);
             SocketModel.getInstance().getOut().println(message);
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed

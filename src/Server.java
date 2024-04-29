@@ -48,6 +48,7 @@ public class Server extends Thread {
         } catch (IOException e) {
             System.err.println("Could not listen on port: 22000.");
             System.exit(1);
+
         } finally {
             try {
                 serverSocket.close();
@@ -68,28 +69,24 @@ public class Server extends Thread {
     @Override
     public void run() {
         try {
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
-                    true);
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(clientSocket.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                System.out.println("Server recebeu: " + inputLine);
+                System.out.println("Servidor recebeu: " + inputLine);
 
                 JSONObject requisicao = new JSONObject(inputLine);
                 JSONObject resposta = new JSONObject();
                 resposta.put("operacao", requisicao.getString("operacao"));
 
                 switch (requisicao.getString("operacao")) {
-                    case "cadastrarCandidato" -> {
-                        String emailQuery = "SELECT id_candidato FROM candidato WHERE email = ?;";
-                        try (PreparedStatement emailPS = conn.prepareStatement(emailQuery)) {
+                    case "cadastrarCandidato":
+                        try (PreparedStatement emailPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (!emailCount.next()) {
-                                    String query = "INSERT INTO `candidato` (`nome`, `email`, `senha`) VALUES (?, ?, ?);";
-
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO `candidato` (`nome`, `email`, `senha`) VALUES (?, ?, ?);")) {
                                         preparedStatement.setString(1, requisicao.getString("nome"));
                                         preparedStatement.setString(2, requisicao.getString("email"));
                                         preparedStatement.setString(3, requisicao.getString("senha"));
@@ -108,10 +105,10 @@ public class Server extends Thread {
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
-                    }
-                    case "loginCandidato" -> {
-                        String query = "SELECT id_candidato FROM candidato WHERE email = ? AND senha = ?;";
-                        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                        break;
+
+                    case "loginCandidato":
+                        try (PreparedStatement preparedStatement = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ? AND senha = ?;")) {
                             preparedStatement.setString(1, requisicao.getString("email"));
                             preparedStatement.setString(2, requisicao.getString("senha"));
                             try (ResultSet count = preparedStatement.executeQuery()) {
@@ -129,20 +126,19 @@ public class Server extends Thread {
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
-                    }
-                    case "logout" -> {
+                        break;
+
+                    case "logout":
                         tokens.remove(requisicao.getString("token"));
                         resposta.put("status", 204);
-                    }
-                    case "atualizarCandidato" -> {
-                        String emailQuery = "SELECT id_candidato FROM candidato WHERE email = ?;";
-                        try (PreparedStatement emailPS = conn.prepareStatement(emailQuery)) {
+                        break;
+
+                    case "atualizarCandidato":
+                        try (PreparedStatement emailPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (emailCount.next()) {
-                                    String query = "UPDATE `candidato` SET `nome` = ?, `senha` = ? WHERE email = ?;";
-
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE `candidato` SET `nome` = ?, `senha` = ? WHERE email = ?;")) {
                                         preparedStatement.setString(1, requisicao.getString("nome"));
                                         preparedStatement.setString(2, requisicao.getString("senha"));
                                         preparedStatement.setString(3, requisicao.getString("email"));
@@ -158,10 +154,10 @@ public class Server extends Thread {
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
-                    }
-                    case "visualizarCandidato" -> {
-                        String emailQuery = "SELECT nome, senha FROM candidato WHERE email = ?;";
-                        try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
+                        break;
+
+                    case "visualizarCandidato":
+                        try (PreparedStatement ps = conn.prepareStatement("SELECT nome, senha FROM candidato WHERE email = ?;")) {
                             ps.setString(1, requisicao.getString("email"));
                             try (ResultSet rs = ps.executeQuery()) {
                                 if (rs.next()) {
@@ -177,15 +173,14 @@ public class Server extends Thread {
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
-                    }
-                    case "apagarCandidato" -> {
-                        String emailQuery = "SELECT id_candidato FROM candidato WHERE email = ?;";
-                        try (PreparedStatement ps = conn.prepareStatement(emailQuery)) {
+                        break;
+
+                    case "apagarCandidato":
+                        try (PreparedStatement ps = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
                             ps.setString(1, requisicao.getString("email"));
                             try (ResultSet rs = ps.executeQuery()) {
                                 if (rs.next()) {
-                                    String deleteQuery = "DELETE FROM `candidato` WHERE `email` = ?;";
-                                    try (PreparedStatement psd = conn.prepareStatement(deleteQuery)) {
+                                    try (PreparedStatement psd = conn.prepareStatement("DELETE FROM `candidato` WHERE `email` = ?;")) {
                                         psd.setString(1, requisicao.getString("email"));
                                         psd.executeUpdate();
 
@@ -201,11 +196,13 @@ public class Server extends Thread {
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
-                    }
+                        break;
 
-                    default ->
+                    default:
                         throw new AssertionError();
+
                 }
+                System.out.println("Servidor enviou: " + resposta);
                 out.println(resposta);
             }
             out.close();

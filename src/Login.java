@@ -36,25 +36,28 @@ public class Login extends javax.swing.JFrame {
                 } catch (IOException ex) {
                     Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Login recebeu: " + inputLine);
+                System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
                 switch (mensagem.getString("operacao")) {
-                    case "loginCandidato" -> {
+                    case "loginCandidato":
                         switch (mensagem.getInt("status")) {
-                            case 200 -> {
+                            case 200:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
                                 model.setEmail(txtLogin.getText());
                                 model.setToken(mensagem.getString("token"));
                                 this.dispose();
                                 Inicio inicio = new Inicio();
                                 inicio.setVisible(true);
-                            }
-                            default ->
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
+                                break;
 
-                    default ->
+                            default:
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+
+                        }
+                        break;
+
+                    default:
                         throw new AssertionError();
                 }
             }
@@ -163,6 +166,7 @@ public class Login extends javax.swing.JFrame {
             message.put("operacao", "loginCandidato");
             message.put("email", login);
             message.put("senha", password);
+            System.out.println("Cliente enviou: " + message);
             SocketModel.getInstance().getOut().println(message);
         }
     }//GEN-LAST:event_btnLoginActionPerformed
