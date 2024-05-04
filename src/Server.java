@@ -108,8 +108,58 @@ public class Server extends Thread {
                         }
                         break;
 
+                    case "cadastrarEmpresa":
+                        try (PreparedStatement emailPS = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ?;")) {
+                            emailPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet emailCount = emailPS.executeQuery()) {
+                                if (!emailCount.next()) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO `empresa` (`razao_social`, `email`, `ramo`, `descricao`, `senha`) VALUES (?, ?, ?, ?, ?);")) {
+                                        preparedStatement.setString(1, requisicao.getString("razaoSocial"));
+                                        preparedStatement.setString(2, requisicao.getString("email"));
+                                        preparedStatement.setString(3, requisicao.getString("ramo"));
+                                        preparedStatement.setString(4, requisicao.getString("descricao"));
+                                        preparedStatement.setString(5, requisicao.getString("senha"));
+                                        preparedStatement.executeUpdate();
+                                    }
+                                    resposta.put("status", 201);
+                                    String token = UUID.randomUUID().toString();
+                                    tokens.put(token, requisicao.getString("email"));
+                                    resposta.put("token", token);
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "E-mail já cadastrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
                     case "loginCandidato":
                         try (PreparedStatement preparedStatement = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ? AND senha = ?;")) {
+                            preparedStatement.setString(1, requisicao.getString("email"));
+                            preparedStatement.setString(2, requisicao.getString("senha"));
+                            try (ResultSet count = preparedStatement.executeQuery()) {
+                                if (count.next()) {
+                                    resposta.put("status", 200);
+                                    String token = UUID.randomUUID().toString();
+                                    tokens.put(token, requisicao.getString("email"));
+                                    resposta.put("token", token);
+                                } else {
+                                    resposta.put("status", 401);
+                                    resposta.put("mensagem", "Login ou senha incorretos");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "loginEmpresa":
+                        try (PreparedStatement preparedStatement = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ? AND senha = ?;")) {
                             preparedStatement.setString(1, requisicao.getString("email"));
                             preparedStatement.setString(2, requisicao.getString("senha"));
                             try (ResultSet count = preparedStatement.executeQuery()) {

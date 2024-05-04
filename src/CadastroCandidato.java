@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
-public class Cadastro extends javax.swing.JFrame {
+public class CadastroCandidato extends javax.swing.JFrame {
 
     private boolean atualizacao = false;
 
-    public Cadastro(boolean atualizacao) {
+    public CadastroCandidato(boolean atualizacao) {
         this.atualizacao = atualizacao;
         this.setVisible(true);
 
@@ -26,7 +26,7 @@ public class Cadastro extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
