@@ -200,7 +200,6 @@ public class CadastroCandidato extends javax.swing.JFrame {
         } else {
             new Inicio();
         }
-
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
