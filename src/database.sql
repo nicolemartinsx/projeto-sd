@@ -11,15 +11,15 @@ DROP TABLE IF EXISTS candidato;
 
 CREATE TABLE candidato (
     id_candidato INT NOT NULL AUTO_INCREMENT,
-    nome CHAR(50) NOT NULL,
-    email CHAR(50) NOT NULL,
-    senha CHAR(50) NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    senha VARCHAR(50) NOT NULL,
     PRIMARY KEY (id_candidato)
 );
 
 CREATE TABLE competencia (
     id_competencia INT NOT NULL AUTO_INCREMENT,
-    competencia CHAR(50) NOT NULL,
+    competencia VARCHAR(50) NOT NULL,
     PRIMARY KEY (id_competencia)
 );
 
@@ -35,11 +35,12 @@ CREATE TABLE candidatocompetencia (
 
 CREATE TABLE empresa (
     id_empresa INT NOT NULL AUTO_INCREMENT,
-    razao_social CHAR(50) NOT NULL,
-    email CHAR(50) NOT NULL,
+    razao_social VARCHAR(50) NOT NULL,
+    cnpj VARCHAR(14) NOT NULL,
+    email VARCHAR(50) NOT NULL,
     senha INT NOT NULL,
-    ramo CHAR(50) NOT NULL,
-    descricao CHAR(255) NOT NULL,
+    ramo VARCHAR(50) NOT NULL,
+    descricao VARCHAR(255) NOT NULL,
     PRIMARY KEY (id_empresa)
 );
 

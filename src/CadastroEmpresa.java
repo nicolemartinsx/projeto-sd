@@ -56,6 +56,7 @@ public class CadastroEmpresa extends javax.swing.JFrame {
                             case 201:
                                 JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                                 this.dispose();
+                                new Inicio();
                                 break;
                             default:
                                 JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -239,7 +240,11 @@ public class CadastroEmpresa extends javax.swing.JFrame {
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
         this.dispose();
-        new Login();
+        if (!this.atualizacao) {
+            new Login();
+        } else {
+            new Inicio();
+        }
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

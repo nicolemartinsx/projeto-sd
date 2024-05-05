@@ -74,7 +74,6 @@ public class Login extends javax.swing.JFrame {
         btnLogin = new javax.swing.JButton();
         btnCadastrar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         rbCandidato = new javax.swing.JRadioButton();
         rbEmpresa = new javax.swing.JRadioButton();
 
@@ -102,8 +101,6 @@ public class Login extends javax.swing.JFrame {
 
         jLabel2.setText("Login");
 
-        jLabel5.setText("Tipo");
-
         rbgTipo.add(rbCandidato);
         rbCandidato.setText("Candidato");
         rbCandidato.setActionCommand("loginCandidato");
@@ -119,7 +116,6 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
                     .addComponent(jLabel2)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(layout.createSequentialGroup()
@@ -141,9 +137,7 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rbCandidato)
                     .addComponent(rbEmpresa))
@@ -210,7 +204,6 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JRadioButton rbCandidato;
     private javax.swing.JRadioButton rbEmpresa;
     private javax.swing.ButtonGroup rbgTipo;

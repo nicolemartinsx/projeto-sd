@@ -196,6 +196,7 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPerfilActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
+        this.dispose();
         if (AuthenticationModel.getInstance().getCandidato()) {
             new CadastroCandidato(true);
         } else {

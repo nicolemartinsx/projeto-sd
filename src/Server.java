@@ -87,7 +87,7 @@ public class Server extends Thread {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (!emailCount.next()) {
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO `candidato` (`nome`, `email`, `senha`) VALUES (?, ?, ?);")) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO candidato (nome, email, senha) VALUES (?, ?, ?);")) {
                                         preparedStatement.setString(1, requisicao.getString("nome"));
                                         preparedStatement.setString(2, requisicao.getString("email"));
                                         preparedStatement.setString(3, requisicao.getString("senha"));
@@ -114,7 +114,7 @@ public class Server extends Thread {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (!emailCount.next()) {
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO `empresa` (`razao_social`, `cnpj`, `email`, `ramo`, `descricao`, `senha`) VALUES (?, ?, ?, ?, ?, ?);")) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO empresa (razao_social, cnpj, email, ramo, descricao, senha) VALUES (?, ?, ?, ?, ?, ?);")) {
                                         preparedStatement.setString(1, requisicao.getString("razaoSocial"));
                                         preparedStatement.setString(2, requisicao.getString("cnpj"));
                                         preparedStatement.setString(3, requisicao.getString("email"));
@@ -193,7 +193,7 @@ public class Server extends Thread {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (emailCount.next()) {
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE `candidato` SET `nome` = ?, `senha` = ? WHERE email = ?;")) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE candidato SET nome = ?, senha = ? WHERE email = ?;")) {
                                         preparedStatement.setString(1, requisicao.getString("nome"));
                                         preparedStatement.setString(2, requisicao.getString("senha"));
                                         preparedStatement.setString(3, requisicao.getString("email"));
@@ -217,7 +217,7 @@ public class Server extends Thread {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (emailCount.next()) {
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE `projetosd`.`empresa` SET `razao_social` = ?, `cnpj` = ?, `senha` = ?, `ramo` = ?, `descricao` = ? WHERE `email` = ?;")) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE projetosd.empresa SET razao_social = ?, cnpj = ?, senha = ?, ramo = ?, descricao = ? WHERE email = ?;")) {
                                         preparedStatement.setString(1, requisicao.getString("razaoSocial"));
                                         preparedStatement.setString(2, requisicao.getString("cnpj"));
                                         preparedStatement.setString(3, requisicao.getString("senha"));
@@ -261,7 +261,7 @@ public class Server extends Thread {
                         break;
 
                     case "visualizarEmpresa":
-                        try (PreparedStatement ps = conn.prepareStatement("SELECT `razao_social`, `cnpj`, `ramo`, `descricao`, `senha` FROM empresa WHERE email = ?;")) {
+                        try (PreparedStatement ps = conn.prepareStatement("SELECT razao_social, cnpj, ramo, descricao, senha FROM empresa WHERE email = ?;")) {
                             ps.setString(1, requisicao.getString("email"));
                             try (ResultSet rs = ps.executeQuery()) {
                                 if (rs.next()) {
@@ -288,7 +288,7 @@ public class Server extends Thread {
                             ps.setString(1, requisicao.getString("email"));
                             try (ResultSet rs = ps.executeQuery()) {
                                 if (rs.next()) {
-                                    try (PreparedStatement psd = conn.prepareStatement("DELETE FROM `candidato` WHERE `email` = ?;")) {
+                                    try (PreparedStatement psd = conn.prepareStatement("DELETE FROM candidato WHERE email = ?;")) {
                                         psd.setString(1, requisicao.getString("email"));
                                         psd.executeUpdate();
 
@@ -311,7 +311,7 @@ public class Server extends Thread {
                             ps.setString(1, requisicao.getString("email"));
                             try (ResultSet rs = ps.executeQuery()) {
                                 if (rs.next()) {
-                                    try (PreparedStatement psd = conn.prepareStatement("DELETE FROM `empresa` WHERE `email` = ?;")) {
+                                    try (PreparedStatement psd = conn.prepareStatement("DELETE FROM empresa WHERE email = ?;")) {
                                         psd.setString(1, requisicao.getString("email"));
                                         psd.executeUpdate();
 
