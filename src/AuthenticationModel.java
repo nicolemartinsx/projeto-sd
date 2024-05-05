@@ -2,7 +2,8 @@
 public class AuthenticationModel {
 
     private static AuthenticationModel instance;
-
+    
+    private Boolean candidato;
     private String email;
     private String token;
 
@@ -30,5 +31,13 @@ public class AuthenticationModel {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Boolean getCandidato() {
+        return candidato;
+    }
+
+    public void setCandidato(Boolean candidato) {
+        this.candidato = candidato;
     }
 }

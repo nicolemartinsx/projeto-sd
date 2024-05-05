@@ -6,14 +6,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
-/**
- *
- * @author mrtnsx
- */
 public class CadastroEmpresa extends javax.swing.JFrame {
 
     private boolean atualizacao = false;
@@ -43,6 +35,7 @@ public class CadastroEmpresa extends javax.swing.JFrame {
                         switch (mensagem.getInt("status")) {
                             case 201:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setCandidato(false);
                                 model.setEmail(txtEmail.getText());
                                 model.setToken(mensagem.getString("token"));
                                 JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -71,7 +64,8 @@ public class CadastroEmpresa extends javax.swing.JFrame {
                         break;
 
                     default:
-                        throw new AssertionError();
+                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                        break;
                 }
             }
         }).start();
@@ -124,8 +118,6 @@ public class CadastroEmpresa extends javax.swing.JFrame {
         jLabel1.setText("Senha");
 
         jLabel5.setText("Email");
-
-        txtRazaoSocial.addActionListener(this::txtRazaoSocialActionPerformed);
 
         jLabel6.setText("CNPJ");
 
@@ -235,10 +227,6 @@ public class CadastroEmpresa extends javax.swing.JFrame {
             SocketModel.getInstance().getOut().println(message);
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
-
-    private void txtRazaoSocialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtRazaoSocialActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtRazaoSocialActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;

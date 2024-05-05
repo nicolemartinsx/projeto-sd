@@ -28,10 +28,12 @@ public class Login extends javax.swing.JFrame {
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
                 switch (mensagem.getString("operacao")) {
+                    case "loginCandidato":
                     case "loginEmpresa":
                         switch (mensagem.getInt("status")) {
                             case 200:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setCandidato("loginCandidato".equals(mensagem.getString("operacao")));
                                 model.setEmail(txtLogin.getText());
                                 model.setToken(mensagem.getString("token"));
                                 this.dispose();

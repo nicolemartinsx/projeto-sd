@@ -122,9 +122,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtRazaoSocial">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtRazaoSocialActionPerformed"/>
-      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="Cadastro_txtNome"/>
       </AuxValues>

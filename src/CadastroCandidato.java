@@ -35,6 +35,7 @@ public class CadastroCandidato extends javax.swing.JFrame {
                         switch (mensagem.getInt("status")) {
                             case 201:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setCandidato(true);
                                 model.setEmail(txtEmail.getText());
                                 model.setToken(mensagem.getString("token"));
                                 JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);

@@ -103,6 +103,7 @@ public class Server extends Thread {
                                 }
                             }
                         } catch (Exception ex) {
+                            ex.printStackTrace();
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
@@ -113,12 +114,13 @@ public class Server extends Thread {
                             emailPS.setString(1, requisicao.getString("email"));
                             try (ResultSet emailCount = emailPS.executeQuery()) {
                                 if (!emailCount.next()) {
-                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO `empresa` (`razao_social`, `email`, `ramo`, `descricao`, `senha`) VALUES (?, ?, ?, ?, ?);")) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO `empresa` (`razao_social`, `cnpj`, `email`, `ramo`, `descricao`, `senha`) VALUES (?, ?, ?, ?, ?, ?);")) {
                                         preparedStatement.setString(1, requisicao.getString("razaoSocial"));
-                                        preparedStatement.setString(2, requisicao.getString("email"));
-                                        preparedStatement.setString(3, requisicao.getString("ramo"));
-                                        preparedStatement.setString(4, requisicao.getString("descricao"));
-                                        preparedStatement.setString(5, requisicao.getString("senha"));
+                                        preparedStatement.setString(2, requisicao.getString("cnpj"));
+                                        preparedStatement.setString(3, requisicao.getString("email"));
+                                        preparedStatement.setString(4, requisicao.getString("ramo"));
+                                        preparedStatement.setString(5, requisicao.getString("descricao"));
+                                        preparedStatement.setString(6, requisicao.getString("senha"));
                                         preparedStatement.executeUpdate();
                                     }
                                     resposta.put("status", 201);
@@ -153,6 +155,7 @@ public class Server extends Thread {
                                 }
                             }
                         } catch (Exception ex) {
+                            ex.printStackTrace();
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
@@ -174,6 +177,7 @@ public class Server extends Thread {
                                 }
                             }
                         } catch (Exception ex) {
+                            ex.printStackTrace();
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
@@ -202,6 +206,35 @@ public class Server extends Thread {
                                 }
                             }
                         } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "atualizarEmpresa":
+                        try (PreparedStatement emailPS = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ?;")) {
+                            emailPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet emailCount = emailPS.executeQuery()) {
+                                if (emailCount.next()) {
+                                    try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE `projetosd`.`empresa` SET `razao_social` = ?, `cnpj` = ?, `senha` = ?, `ramo` = ?, `descricao` = ? WHERE `email` = ?;")) {
+                                        preparedStatement.setString(1, requisicao.getString("razaoSocial"));
+                                        preparedStatement.setString(2, requisicao.getString("cnpj"));
+                                        preparedStatement.setString(3, requisicao.getString("senha"));
+                                        preparedStatement.setString(4, requisicao.getString("ramo"));
+                                        preparedStatement.setString(5, requisicao.getString("descricao"));
+                                        preparedStatement.setString(6, requisicao.getString("email"));
+
+                                        preparedStatement.executeUpdate();
+                                    }
+                                    resposta.put("status", 201);
+                                } else {
+                                    resposta.put("status", 404);
+                                    resposta.put("mensagem", "E-mail não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
@@ -221,6 +254,30 @@ public class Server extends Thread {
                                 }
                             }
                         } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "visualizarEmpresa":
+                        try (PreparedStatement ps = conn.prepareStatement("SELECT `razao_social`, `cnpj`, `ramo`, `descricao`, `senha` FROM empresa WHERE email = ?;")) {
+                            ps.setString(1, requisicao.getString("email"));
+                            try (ResultSet rs = ps.executeQuery()) {
+                                if (rs.next()) {
+                                    resposta.put("status", 201);
+                                    resposta.put("razaoSocial", rs.getString("razao_social"));
+                                    resposta.put("cnpj", rs.getString("cnpj"));
+                                    resposta.put("senha", rs.getString("senha"));
+                                    resposta.put("ramo", rs.getString("ramo"));
+                                    resposta.put("descricao", rs.getString("descricao"));
+                                } else {
+                                    resposta.put("status", 404);
+                                    resposta.put("mensagem", "E-mail não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                             resposta.put("status", 404);
                             resposta.put("mensagem", "Erro");
                         }
@@ -232,6 +289,29 @@ public class Server extends Thread {
                             try (ResultSet rs = ps.executeQuery()) {
                                 if (rs.next()) {
                                     try (PreparedStatement psd = conn.prepareStatement("DELETE FROM `candidato` WHERE `email` = ?;")) {
+                                        psd.setString(1, requisicao.getString("email"));
+                                        psd.executeUpdate();
+
+                                        resposta.put("status", 201);
+                                    }
+                                } else {
+                                    resposta.put("status", 404);
+                                    resposta.put("mensagem", "E-mail não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "apagarEmpresa":
+                        try (PreparedStatement ps = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ?;")) {
+                            ps.setString(1, requisicao.getString("email"));
+                            try (ResultSet rs = ps.executeQuery()) {
+                                if (rs.next()) {
+                                    try (PreparedStatement psd = conn.prepareStatement("DELETE FROM `empresa` WHERE `email` = ?;")) {
                                         psd.setString(1, requisicao.getString("email"));
                                         psd.executeUpdate();
 
