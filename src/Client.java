@@ -42,7 +42,7 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        txtIP.setText("127.0.0.1");
+        txtIP.setText("10.20.8.0");
 
         jLabel2.setText("Porta");
 
