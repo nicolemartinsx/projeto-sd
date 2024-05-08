@@ -200,7 +200,8 @@ public class Server extends Thread {
                         break;
 
                     default:
-                        throw new AssertionError();
+                        System.err.println("Servidor recebeu operação não registrada: " + requisicao.getString("operacao"));
+                        break;
 
                 }
                 System.out.println("Servidor enviou: " + resposta);

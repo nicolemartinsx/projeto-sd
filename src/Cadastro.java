@@ -63,7 +63,8 @@ public class Cadastro extends javax.swing.JFrame {
                         break;
 
                     default:
-                        throw new AssertionError();
+                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                        break;
                 }
             }
         }).start();
@@ -95,6 +96,7 @@ public class Cadastro extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
+        btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(200, 200));
@@ -110,25 +112,30 @@ public class Cadastro extends javax.swing.JFrame {
 
         jLabel5.setText("Email");
 
+        btnVoltar.setText("Voltar");
+        btnVoltar.addActionListener(this::btnVoltarActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(labelCadastro)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnCadastrar)
-                        .addGap(144, 144, 144))
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel4)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
-                        .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtNome, javax.swing.GroupLayout.Alignment.LEADING)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1)
+                        .addComponent(labelCadastro)
+                        .addComponent(jLabel5)
+                        .addComponent(jLabel4)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNome, javax.swing.GroupLayout.Alignment.LEADING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnVoltar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addComponent(btnCadastrar)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,9 +154,11 @@ public class Cadastro extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCadastrar)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCadastrar)
+                    .addComponent(btnVoltar))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         pack();
@@ -182,8 +191,14 @@ public class Cadastro extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
+    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+        this.dispose();
+        new Login();
+    }//GEN-LAST:event_btnVoltarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
+    private javax.swing.JButton btnVoltar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
