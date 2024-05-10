@@ -46,14 +46,14 @@ public class Server extends Thread {
                 System.exit(1);
             }
         } catch (IOException e) {
-            System.err.println("Não foi possível escutar na porta: "+porta);
+            System.err.println("Não foi possível escutar na porta: " + porta);
             System.exit(1);
 
         } finally {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                System.err.println("Não foi possível fechar a porta: "+porta);
+                System.err.println("Não foi possível fechar a porta: " + porta);
                 System.exit(1);
             }
         }
@@ -210,6 +210,8 @@ public class Server extends Thread {
             out.close();
             in.close();
             clientSocket.close();
+        } catch (SocketException ex) {
+            System.out.println("Cliente desconectado");
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
