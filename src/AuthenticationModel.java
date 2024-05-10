@@ -1,11 +1,14 @@
+
 public class AuthenticationModel {
+
     private static AuthenticationModel instance;
-    
+
     private String email;
     private String token;
-    
-    private AuthenticationModel() {}
-    
+
+    private AuthenticationModel() {
+    }
+
     public static synchronized AuthenticationModel getInstance() {
         if (instance == null) {
             instance = new AuthenticationModel();
@@ -20,7 +23,7 @@ public class AuthenticationModel {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     public String getToken() {
         return token;
     }

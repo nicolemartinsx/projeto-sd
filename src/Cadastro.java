@@ -55,6 +55,7 @@ public class Cadastro extends javax.swing.JFrame {
                             case 201:
                                 JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                                 this.dispose();
+                                new Inicio();
                                 break;
                             default:
                                 JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
@@ -195,6 +196,8 @@ public class Cadastro extends javax.swing.JFrame {
         this.dispose();
         if (!this.atualizacao) {
             new Login();
+        } else {
+            new Inicio();
         }
 
     }//GEN-LAST:event_btnVoltarActionPerformed

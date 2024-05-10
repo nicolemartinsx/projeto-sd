@@ -6,14 +6,16 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class SocketModel {
+
     private static SocketModel instance;
-    
+
     private Socket socket;
     private PrintWriter out = null;
     private BufferedReader in = null;
-    
-    private SocketModel() {}
-    
+
+    private SocketModel() {
+    }
+
     public static synchronized SocketModel getInstance() {
         if (instance == null) {
             instance = new SocketModel();
