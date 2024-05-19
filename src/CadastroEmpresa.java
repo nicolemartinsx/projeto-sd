@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.json.JSONObject;
 
-public class Cadastro extends javax.swing.JFrame {
+public class CadastroEmpresa extends javax.swing.JFrame {
 
     private boolean atualizacao = false;
 
-    public Cadastro(boolean atualizacao) {
+    public CadastroEmpresa(boolean atualizacao) {
         this.atualizacao = atualizacao;
         this.setVisible(true);
 
@@ -26,15 +26,16 @@ public class Cadastro extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
                 switch (mensagem.getString("operacao")) {
-                    case "cadastrarCandidato":
+                    case "cadastrarEmpresa":
                         switch (mensagem.getInt("status")) {
                             case 201:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setCandidato(false);
                                 model.setEmail(txtEmail.getText());
                                 model.setToken(mensagem.getString("token"));
                                 JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -50,7 +51,7 @@ public class Cadastro extends javax.swing.JFrame {
                         }
                         break;
 
-                    case "atualizarCandidato":
+                    case "atualizarEmpresa":
                         switch (mensagem.getInt("status")) {
                             case 201:
                                 JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -74,7 +75,7 @@ public class Cadastro extends javax.swing.JFrame {
         if (atualizacao) {
             txtEmail.setEnabled(false);
             txtEmail.setText(AuthenticationModel.getInstance().getEmail());
-            labelCadastro.setText("Atualização de cadastro");
+            jLabel2.setText("Atualização de cadastro");
             btnCadastrar.setText("Atualizar cadastro");
             this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         }
@@ -90,13 +91,20 @@ public class Cadastro extends javax.swing.JFrame {
     private void initComponents() {
 
         btnCadastrar = new javax.swing.JButton();
-        labelCadastro = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         txtEmail = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtNome = new javax.swing.JTextField();
+        txtRazaoSocial = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtCNPJ = new javax.swing.JTextField();
+        txtRamo = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescricao = new javax.swing.JTextArea();
         btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -105,13 +113,23 @@ public class Cadastro extends javax.swing.JFrame {
         btnCadastrar.setText("Realizar cadastro");
         btnCadastrar.addActionListener(this::btnCadastrarActionPerformed);
 
-        labelCadastro.setText("Cadastro de candidato");
+        jLabel2.setText("Cadastro de Empresa");
 
-        jLabel4.setText("Nome");
+        jLabel4.setText("Razão social");
 
         jLabel1.setText("Senha");
 
         jLabel5.setText("Email");
+
+        jLabel6.setText("CNPJ");
+
+        jLabel7.setText("Ramo");
+
+        jLabel8.setText("Descrição");
+
+        txtDescricao.setColumns(20);
+        txtDescricao.setRows(5);
+        jScrollPane1.setViewportView(txtDescricao);
 
         btnVoltar.setText("Voltar");
         btnVoltar.addActionListener(this::btnVoltarActionPerformed);
@@ -125,41 +143,59 @@ public class Cadastro extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel1)
-                        .addComponent(labelCadastro)
+                        .addComponent(jLabel2)
                         .addComponent(jLabel5)
                         .addComponent(jLabel4)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtPassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
                             .addComponent(txtEmail, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNome, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addComponent(txtRazaoSocial, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtCNPJ, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtRamo, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVoltar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCadastrar)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(labelCadastro)
+                .addComponent(jLabel2)
                 .addGap(24, 24, 24)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtRazaoSocial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCNPJ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtRamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCadastrar)
                     .addComponent(btnVoltar))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -167,25 +203,35 @@ public class Cadastro extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        String nome = txtNome.getText();
+        String razaoSocial = txtRazaoSocial.getText();
         String email = txtEmail.getText();
+        String cnpj = txtCNPJ.getText();
+        String ramo = txtRamo.getText();
+        String descricao = txtDescricao.getText();
         String senha = new String(txtPassword.getPassword());
 
-        if (nome.length() < 6 || nome.length() > 30) {
-            JOptionPane.showMessageDialog(null, "Nome deve conter entre 6 e 30 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (razaoSocial.length() < 6 || razaoSocial.length() > 30) {
+            JOptionPane.showMessageDialog(null, "Razão social deve conter entre 6 e 30 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (email.length() < 7 || email.length() > 50) {
             JOptionPane.showMessageDialog(null, "Email deve conter entre 7 e 50 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (!email.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$")) {
             JOptionPane.showMessageDialog(null, "Email inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (cnpj.length() != 14) {
+            JOptionPane.showMessageDialog(null, "CNPJ deve conter 14 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (!cnpj.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "CNPJ deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (senha.length() < 3 || senha.length() > 8) {
             JOptionPane.showMessageDialog(null, "Senha deve conter entre 3 e 8 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (!senha.matches("\\d+")) {
             JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             JSONObject message = new JSONObject();
-            message.put("operacao", this.atualizacao ? "atualizarCandidato" : "cadastrarCandidato");
-            message.put("nome", nome);
+            message.put("operacao", this.atualizacao ? "atualizarEmpresa" : "cadastrarEmpresa");
+            message.put("razaoSocial", razaoSocial);
             message.put("email", email);
+            message.put("cnpj", cnpj);
+            message.put("ramo", ramo);
+            message.put("descricao", descricao);
             message.put("senha", senha);
             System.out.println("Cliente enviou: " + message);
             SocketModel.getInstance().getOut().println(message);
@@ -199,18 +245,24 @@ public class Cadastro extends javax.swing.JFrame {
         } else {
             new Inicio();
         }
-
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel labelCadastro;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtCNPJ;
+    private javax.swing.JTextArea txtDescricao;
     private javax.swing.JTextField txtEmail;
-    private javax.swing.JTextField txtNome;
     private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtRamo;
+    private javax.swing.JTextField txtRazaoSocial;
     // End of variables declaration//GEN-END:variables
 }

@@ -23,15 +23,17 @@ public class Login extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
                 switch (mensagem.getString("operacao")) {
                     case "loginCandidato":
+                    case "loginEmpresa":
                         switch (mensagem.getInt("status")) {
                             case 200:
                                 AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setCandidato("loginCandidato".equals(mensagem.getString("operacao")));
                                 model.setEmail(txtLogin.getText());
                                 model.setToken(mensagem.getString("token"));
                                 this.dispose();
@@ -64,13 +66,16 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        rbgTipo = new javax.swing.ButtonGroup();
         jLabel4 = new javax.swing.JLabel();
         txtLogin = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         txtPassword = new javax.swing.JPasswordField();
         btnLogin = new javax.swing.JButton();
-        btnCadastro = new javax.swing.JButton();
+        btnCadastrar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        rbCandidato = new javax.swing.JRadioButton();
+        rbEmpresa = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setLocation(new java.awt.Point(0, 0));
@@ -87,14 +92,22 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        btnCadastro.setText("Realizar cadastro");
-        btnCadastro.addActionListener(new java.awt.event.ActionListener() {
+        btnCadastrar.setText("Cadastrar");
+        btnCadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadastroActionPerformed(evt);
+                btnCadastrarActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Login de candidato");
+        jLabel2.setText("Login");
+
+        rbgTipo.add(rbCandidato);
+        rbCandidato.setText("Candidato");
+        rbCandidato.setActionCommand("loginCandidato");
+
+        rbgTipo.add(rbEmpresa);
+        rbEmpresa.setText("Empresa");
+        rbEmpresa.setActionCommand("loginEmpresa");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -106,7 +119,11 @@ public class Login extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(layout.createSequentialGroup()
-                            .addComponent(btnCadastro)
+                            .addComponent(rbCandidato)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(rbEmpresa))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnCadastrar)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnLogin))
                         .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,7 +137,11 @@ public class Login extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel2)
-                .addGap(39, 39, 39)
+                .addGap(40, 40, 40)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(rbCandidato)
+                    .addComponent(rbEmpresa))
+                .addGap(26, 26, 26)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -131,8 +152,8 @@ public class Login extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogin)
-                    .addComponent(btnCadastro))
-                .addContainerGap(47, Short.MAX_VALUE))
+                    .addComponent(btnCadastrar))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         pack();
@@ -143,7 +164,9 @@ public class Login extends javax.swing.JFrame {
         String login = txtLogin.getText();
         String password = new String(txtPassword.getPassword());
 
-        if (login.length() < 7 || login.length() > 50) {
+        if (rbgTipo.getSelection() == null) {
+            JOptionPane.showMessageDialog(null, "Selecione o tipo!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (login.length() < 7 || login.length() > 50) {
             JOptionPane.showMessageDialog(null, "Email deve conter entre 7 e 50 caracteres!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (!login.matches("^([_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*(\\.[a-zA-Z]{1,6}))?$")) {
             JOptionPane.showMessageDialog(null, "Email inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -153,7 +176,7 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             JSONObject message = new JSONObject();
-            message.put("operacao", "loginCandidato");
+            message.put("operacao", rbgTipo.getSelection().getActionCommand());
             message.put("email", login);
             message.put("senha", password);
             System.out.println("Cliente enviou: " + message);
@@ -161,17 +184,29 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void btnCadastroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastroActionPerformed
-        this.dispose();
-        new Cadastro(false);
-    }//GEN-LAST:event_btnCadastroActionPerformed
+    private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
+        if (rbgTipo.getSelection() == null) {
+            JOptionPane.showMessageDialog(null, "Selecione o tipo!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else {
+            this.dispose();
+            if ("loginCandidato".equals(rbgTipo.getSelection().getActionCommand())) {
+                new CadastroCandidato(false);
+            } else {
+                new CadastroEmpresa(false);
+            }
+        }
+
+    }//GEN-LAST:event_btnCadastrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCadastro;
+    private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnLogin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JRadioButton rbCandidato;
+    private javax.swing.JRadioButton rbEmpresa;
+    private javax.swing.ButtonGroup rbgTipo;
     private javax.swing.JTextField txtLogin;
     private javax.swing.JPasswordField txtPassword;
     // End of variables declaration//GEN-END:variables

@@ -26,7 +26,7 @@ public class Inicio extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(Cadastro.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
@@ -48,11 +48,32 @@ public class Inicio extends javax.swing.JFrame {
                         }
                         break;
 
+                    case "visualizarEmpresa":
+                        switch (mensagem.getInt("status")) {
+                            case 201:
+                                JOptionPane.showMessageDialog(null,
+                                        "Razão social: " + mensagem.getString("razaoSocial") + "\n"
+                                        + "CNPJ: " + mensagem.getString("cnpj") + "\n"
+                                        + "Senha: " + mensagem.getString("senha") + "\n"
+                                        + "Ramo: " + mensagem.getString("ramo") + "\n"
+                                        + "Descrição: " + mensagem.getString("descricao")
+                                );
+                                break;
+
+                            default:
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+
+                        }
+                        break;
+
                     case "apagarCandidato":
+                    case "apagarEmpresa":
                         switch (mensagem.getInt("status")) {
                             case 201:
                                 JOptionPane.showMessageDialog(null, "Cadastro apagado com sucesso");
                                 AuthenticationModel model = AuthenticationModel.getInstance();
+                                model.setCandidato(null);
                                 model.setToken(null);
                                 model.setEmail(null);
                                 this.dispose();
@@ -68,6 +89,7 @@ public class Inicio extends javax.swing.JFrame {
 
                     case "logout":
                         AuthenticationModel model = AuthenticationModel.getInstance();
+                        model.setCandidato(null);
                         model.setToken(null);
                         model.setEmail(null);
                         this.dispose();
@@ -167,7 +189,7 @@ public class Inicio extends javax.swing.JFrame {
 
     private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
         JSONObject requisicao = new JSONObject();
-        requisicao.put("operacao", "visualizarCandidato");
+        requisicao.put("operacao", AuthenticationModel.getInstance().getCandidato() ? "visualizarCandidato" : "visualizarEmpresa");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
@@ -175,7 +197,11 @@ public class Inicio extends javax.swing.JFrame {
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
         this.dispose();
-        new Cadastro(true);
+        if (AuthenticationModel.getInstance().getCandidato()) {
+            new CadastroCandidato(true);
+        } else {
+            new CadastroEmpresa(true);
+        }
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
@@ -188,7 +214,7 @@ public class Inicio extends javax.swing.JFrame {
 
     private void btnApagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApagarActionPerformed
         JSONObject requisicao = new JSONObject();
-        requisicao.put("operacao", "apagarCandidato");
+        requisicao.put("operacao", AuthenticationModel.getInstance().getCandidato() ? "apagarCandidato" : "apagarEmpresa");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
