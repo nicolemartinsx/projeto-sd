@@ -1,6 +1,7 @@
 
 import java.net.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import org.json.JSONObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 
 public class Server extends Thread {
 
@@ -19,9 +21,9 @@ public class Server extends Thread {
     private final Connection conn;
     private final Map<String, String> tokens = new HashMap<>();
 
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         // Registra o driver do MySQL
-        Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+        Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
 
         ServerSocket serverSocket = null;
 
@@ -51,7 +53,9 @@ public class Server extends Thread {
 
         } finally {
             try {
-                serverSocket.close();
+                if (serverSocket != null) {
+                    serverSocket.close();
+                }
             } catch (IOException e) {
                 System.err.println("Não foi possível fechar a porta: " + porta);
                 System.exit(1);
@@ -325,6 +329,194 @@ public class Server extends Thread {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "visualizarCompetenciaExperiencia":
+                        try (PreparedStatement candidatoPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
+                            candidatoPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet candidato = candidatoPS.executeQuery()) {
+                                if (candidato.next()) {
+                                    try (PreparedStatement candidatoCompetenciaPS = conn.prepareStatement("SELECT id_competencia, experiencia FROM candidatocompetencia where id_candidato = ?;")) {
+                                        candidatoCompetenciaPS.setInt(1, candidato.getInt("id_candidato"));
+                                        try (ResultSet candidatoCompetenciaRS = candidatoCompetenciaPS.executeQuery()) {
+                                            JSONArray competenciasExperiencias = new JSONArray();
+                                            while (candidatoCompetenciaRS.next()) {
+                                                try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT competencia FROM competencia where id_competencia = ?;")) {
+                                                    competenciaPS.setInt(1, candidatoCompetenciaRS.getInt("id_competencia"));
+                                                    try (ResultSet competenciaRS = competenciaPS.executeQuery()) {
+                                                        if (competenciaRS.next()) {
+                                                            JSONObject competenciaExperiencia = new JSONObject();
+                                                            competenciaExperiencia.put("competencia", competenciaRS.getString("competencia"));
+                                                            competenciaExperiencia.put("experiencia", candidatoCompetenciaRS.getString("experiencia"));
+                                                            competenciasExperiencias.put(competenciaExperiencia);
+                                                        } else {
+                                                            resposta.put("status", 422);
+                                                            resposta.put("mensagem", "Competência não encontrada");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            resposta.put("status", 200);
+                                            resposta.put("competenciaExperiencia", competenciasExperiencias);
+                                        }
+                                    }
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Candidato não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "cadastrarCompetenciaExperiencia":
+                        try (PreparedStatement candidatoPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
+                            candidatoPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet candidato = candidatoPS.executeQuery()) {
+                                if (candidato.next()) {
+                                    JSONArray competenciasExperiencias = requisicao.getJSONArray("competenciaExperiencia");
+                                    for (int i = 0; i < competenciasExperiencias.length(); i++) {
+                                        JSONObject competenciaExperiencia = (JSONObject) competenciasExperiencias.get(i);
+                                        try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT id_competencia FROM competencia WHERE competencia = ?;")) {
+                                            competenciaPS.setString(1, competenciaExperiencia.getString("competencia"));
+                                            try (ResultSet competencia = competenciaPS.executeQuery()) {
+                                                if (competencia.next()) {
+                                                    try (PreparedStatement candidatoCompetenciaPS = conn.prepareStatement("SELECT id_candidato_competencia FROM candidatocompetencia WHERE id_candidato = ? AND id_competencia = ?;")) {
+                                                        candidatoCompetenciaPS.setInt(1, candidato.getInt("id_candidato"));
+                                                        candidatoCompetenciaPS.setInt(2, competencia.getInt("id_competencia"));
+                                                        try (ResultSet candidatoCompetencia = candidatoCompetenciaPS.executeQuery()) {
+                                                            if (!candidatoCompetencia.next()) {
+                                                                try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO candidatocompetencia (id_candidato, id_competencia, experiencia) VALUES (?, ?, ?);")) {
+                                                                    preparedStatement.setInt(1, candidato.getInt("id_candidato"));
+                                                                    preparedStatement.setInt(2, competencia.getInt("id_competencia"));
+                                                                    preparedStatement.setInt(3, competenciaExperiencia.getInt("experiencia"));
+                                                                    preparedStatement.executeUpdate();
+                                                                }
+                                                                resposta.put("status", 201);
+                                                                resposta.put("mensagem", "Competencia/Experiencia cadastrada com sucesso");
+                                                            } else {
+                                                                resposta.put("status", 422);
+                                                                resposta.put("mensagem", "Competência já cadastrada");
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    resposta.put("status", 422);
+                                                    resposta.put("mensagem", "Competência não encontrada");
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Candidato não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "atualizarCompetenciaExperiencia":
+                        try (PreparedStatement candidatoPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
+                            candidatoPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet candidato = candidatoPS.executeQuery()) {
+                                if (candidato.next()) {
+                                    JSONArray competenciasExperiencias = requisicao.getJSONArray("competenciaExperiencia");
+                                    for (int i = 0; i < competenciasExperiencias.length(); i++) {
+                                        JSONObject competenciaExperiencia = (JSONObject) competenciasExperiencias.get(i);
+                                        try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT id_competencia FROM competencia WHERE competencia = ?;")) {
+                                            competenciaPS.setString(1, competenciaExperiencia.getString("competencia"));
+                                            try (ResultSet competencia = competenciaPS.executeQuery()) {
+                                                if (competencia.next()) {
+                                                    try (PreparedStatement candidatoCompetenciaPS = conn.prepareStatement("SELECT id_candidato_competencia FROM candidatocompetencia WHERE id_candidato = ? AND id_competencia = ?;")) {
+                                                        candidatoCompetenciaPS.setInt(1, candidato.getInt("id_candidato"));
+                                                        candidatoCompetenciaPS.setInt(2, competencia.getInt("id_competencia"));
+                                                        try (ResultSet candidatoCompetencia = candidatoCompetenciaPS.executeQuery()) {
+                                                            if (candidatoCompetencia.next()) {
+                                                                try (PreparedStatement preparedStatement = conn.prepareStatement("UPDATE candidatocompetencia SET experiencia = ? WHERE id_candidato_competencia = ?")) {
+                                                                    preparedStatement.setInt(1, competenciaExperiencia.getInt("experiencia"));
+                                                                    preparedStatement.setInt(2, candidatoCompetencia.getInt("id_candidato_competencia"));
+                                                                    preparedStatement.executeUpdate();
+                                                                }
+                                                                resposta.put("status", 201);
+                                                                resposta.put("mensagem", "Competencia/Experiencia atualizada com sucesso");
+                                                            } else {
+                                                                resposta.put("status", 422);
+                                                                resposta.put("mensagem", "Competência ainda não cadastrada");
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    resposta.put("status", 422);
+                                                    resposta.put("mensagem", "Competência não encontrada");
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Candidato não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "apagarCompetenciaExperiencia":
+                        try (PreparedStatement candidatoPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
+                            candidatoPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet candidato = candidatoPS.executeQuery()) {
+                                if (candidato.next()) {
+                                    JSONArray competenciasExperiencias = requisicao.getJSONArray("competenciaExperiencia");
+                                    for (int i = 0; i < competenciasExperiencias.length(); i++) {
+                                        JSONObject competenciaExperiencia = (JSONObject) competenciasExperiencias.get(i);
+                                        try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT id_competencia FROM competencia WHERE competencia = ?;")) {
+                                            competenciaPS.setString(1, competenciaExperiencia.getString("competencia"));
+                                            try (ResultSet competencia = competenciaPS.executeQuery()) {
+                                                if (competencia.next()) {
+                                                    try (PreparedStatement candidatoCompetenciaPS = conn.prepareStatement("SELECT id_candidato_competencia FROM candidatocompetencia WHERE id_candidato = ? AND id_competencia = ?;")) {
+                                                        candidatoCompetenciaPS.setInt(1, candidato.getInt("id_candidato"));
+                                                        candidatoCompetenciaPS.setInt(2, competencia.getInt("id_competencia"));
+                                                        try (ResultSet candidatoCompetencia = candidatoCompetenciaPS.executeQuery()) {
+                                                            if (candidatoCompetencia.next()) {
+                                                                try (PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM candidatocompetencia WHERE id_candidato_competencia = ?")) {
+                                                                    preparedStatement.setInt(1, candidatoCompetencia.getInt("id_candidato_competencia"));
+                                                                    preparedStatement.executeUpdate();
+                                                                }
+                                                                resposta.put("status", 201);
+                                                                resposta.put("mensagem", "Competencia/Experiencia apagada com sucesso");
+                                                            } else {
+                                                                resposta.put("status", 422);
+                                                                resposta.put("mensagem", "Competência ainda não cadastrada");
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    resposta.put("status", 422);
+                                                    resposta.put("mensagem", "Competência não encontrada");
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Candidato não encontrado");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
                             resposta.put("mensagem", "Erro");
                         }
                         break;

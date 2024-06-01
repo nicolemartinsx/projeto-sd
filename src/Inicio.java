@@ -104,6 +104,10 @@ public class Inicio extends javax.swing.JFrame {
         }).start();
 
         initComponents();
+        
+        if (!AuthenticationModel.getInstance().getCandidato()) {
+            this.btnCompetencias.setVisible(false);
+        }
     }
 
     /**
@@ -120,6 +124,7 @@ public class Inicio extends javax.swing.JFrame {
         btnAtualizar = new javax.swing.JButton();
         btnApagar = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
+        btnCompetencias = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -153,6 +158,13 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
+        btnCompetencias.setText("Competências");
+        btnCompetencias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompetenciasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -164,23 +176,26 @@ public class Inicio extends javax.swing.JFrame {
                     .addComponent(btnPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnApagar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCompetencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(83, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(48, 48, 48)
                 .addComponent(jLabel2)
-                .addGap(36, 36, 36)
+                .addGap(18, 18, 18)
                 .addComponent(btnPerfil)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnCompetencias)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAtualizar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnApagar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLogout)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
 
         pack();
@@ -220,13 +235,15 @@ public class Inicio extends javax.swing.JFrame {
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_btnApagarActionPerformed
 
-    public static void main(String[] args) {
-        new Inicio().setVisible(true);
-    }
+    private void btnCompetenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompetenciasActionPerformed
+        this.dispose();
+        new Competencias();
+    }//GEN-LAST:event_btnCompetenciasActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApagar;
     private javax.swing.JButton btnAtualizar;
+    private javax.swing.JButton btnCompetencias;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPerfil;
     private javax.swing.JLabel jLabel2;

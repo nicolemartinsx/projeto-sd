@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Container class="javax.swing.JDialog" name="dialogo">
+      <Properties>
+        <Property name="defaultCloseOperation" type="int" value="2"/>
+        <Property name="modalityType" type="java.awt.Dialog$ModalityType" editor="org.netbeans.modules.form.editors.EnumEditor">
+          <Value id="APPLICATION_MODAL"/>
+        </Property>
+      </Properties>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jPanel1" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jPanel1" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="jPanel1">
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="btnVoltarDialog" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="btnSalvarDialog" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblTituloDialog" min="-2" max="-2" attributes="0"/>
+                          <Component id="cmbCompetenciaDialog" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txtExperienciaDialog" alignment="0" min="-2" pref="337" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                      <Component id="lblTituloDialog" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="cmbCompetenciaDialog" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="txtExperienciaDialog" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="btnVoltarDialog" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnSalvarDialog" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="43" max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JComboBox" name="cmbCompetenciaDialog">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="20">
+                    <StringItem index="0" value="Python"/>
+                    <StringItem index="1" value="C#"/>
+                    <StringItem index="2" value="C++"/>
+                    <StringItem index="3" value="JS"/>
+                    <StringItem index="4" value="PHP"/>
+                    <StringItem index="5" value="Swift"/>
+                    <StringItem index="6" value="Java"/>
+                    <StringItem index="7" value="Go"/>
+                    <StringItem index="8" value="SQL"/>
+                    <StringItem index="9" value="Ruby"/>
+                    <StringItem index="10" value="HTML"/>
+                    <StringItem index="11" value="CSS"/>
+                    <StringItem index="12" value="NOSQL"/>
+                    <StringItem index="13" value="Flutter"/>
+                    <StringItem index="14" value="TypeScript"/>
+                    <StringItem index="15" value="Perl"/>
+                    <StringItem index="16" value="Cobol"/>
+                    <StringItem index="17" value="dotNet"/>
+                    <StringItem index="18" value="Kotlin"/>
+                    <StringItem index="19" value="Dart"/>
+                  </StringArray>
+                </Property>
+                <Property name="selectedItem" type="java.lang.Object" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="null" type="code"/>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel4">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Exper&#xea;ncia"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JFormattedTextField" name="txtExperienciaDialog">
+              <Properties>
+                <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
+                  <Format format="#0" subtype="-1" type="0"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtExperienciaDialogActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnVoltarDialog">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Voltar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVoltarDialogActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblTituloDialog">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Adicionar compet&#xea;ncia"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnSalvarDialog">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Adicionar"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalvarDialogActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel3">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Compet&#xea;ncia"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="btnVoltar" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="btnExcluir" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnAtualizar" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnAdicionar" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" min="-2" pref="375" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="22" max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace pref="27" max="32767" attributes="0"/>
+              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="192" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                      <Component id="btnAdicionar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnAtualizar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnExcluir" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="btnVoltar" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="tblCompetencias">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="2" rowCount="0">
+                <Column editable="false" title="Compet&#xea;ncia" type="java.lang.String"/>
+                <Column editable="false" title="Experi&#xea;ncia" type="java.lang.Integer"/>
+              </Table>
+            </Property>
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+              <TableColumnModel selectionModel="0">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+              </TableColumnModel>
+            </Property>
+            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+              <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Component class="javax.swing.JLabel" name="jLabel1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Compet&#xea;ncias"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAdicionar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Adicionar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAdicionarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnVoltar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Voltar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVoltarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAtualizar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Atualizar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAtualizarActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnExcluir">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Excluir"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnExcluirActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>

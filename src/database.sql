@@ -13,7 +13,7 @@ CREATE TABLE candidato (
     id_candidato INT NOT NULL AUTO_INCREMENT,
     nome VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    senha VARCHAR(50) NOT NULL,
+    senha VARCHAR(8) NOT NULL,
     PRIMARY KEY (id_candidato)
 );
 
@@ -27,7 +27,7 @@ CREATE TABLE candidatocompetencia (
     id_candidato_competencia INT NOT NULL AUTO_INCREMENT,
     id_candidato INT NOT NULL,
     id_competencia INT NOT NULL,
-    tempo INT NOT NULL,
+    experiencia INT NOT NULL,
     PRIMARY KEY (id_candidato_competencia),
     FOREIGN KEY (id_candidato) REFERENCES candidato(id_candidato),
     FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia)
@@ -38,7 +38,7 @@ CREATE TABLE empresa (
     razao_social VARCHAR(50) NOT NULL,
     cnpj VARCHAR(14) NOT NULL,
     email VARCHAR(50) NOT NULL,
-    senha INT NOT NULL,
+    senha VARCHAR(8) NOT NULL,
     ramo VARCHAR(50) NOT NULL,
     descricao VARCHAR(255) NOT NULL,
     PRIMARY KEY (id_empresa)
@@ -61,3 +61,5 @@ CREATE TABLE vagacompetencia (
     FOREIGN KEY (id_vaga) REFERENCES vaga(id_vaga),
     FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia)
 );
+
+INSERT INTO competencia (competencia) VALUES ('Python'), ('C#'), ('C++'), ('JS'), ('PHP'), ('Swift'), ('Java'), ('Go'), ('SQL'), ('Ruby'), ('HTML'), ('CSS'), ('NOSQL'), ('Flutter'), ('TypeScript'), ('Perl'), ('Cobol'), ('dotNet'), ('Kotlin'), ('Dart');
