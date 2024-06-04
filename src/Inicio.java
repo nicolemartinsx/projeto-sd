@@ -220,6 +220,7 @@ public class Inicio extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", AuthenticationModel.getInstance().getCandidato() ? "visualizarCandidato" : "visualizarEmpresa");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        requisicao.put("token", AuthenticationModel.getInstance().getToken());
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_btnPerfilActionPerformed
@@ -245,6 +246,7 @@ public class Inicio extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", AuthenticationModel.getInstance().getCandidato() ? "apagarCandidato" : "apagarEmpresa");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        requisicao.put("token", AuthenticationModel.getInstance().getToken());
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_btnApagarActionPerformed

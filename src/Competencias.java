@@ -345,6 +345,7 @@ public class Competencias extends javax.swing.JFrame {
             JSONObject requisicao = new JSONObject();
             requisicao.put("operacao", "apagarCompetenciaExperiencia");
             requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+            requisicao.put("token", AuthenticationModel.getInstance().getToken());
             JSONArray competenciasExperiencias = new JSONArray();
             JSONObject competenciaExperiencia = new JSONObject();
             competenciaExperiencia.put("competencia", this.tblCompetencias.getValueAt(this.tblCompetencias.getSelectedRow(), 0).toString());
@@ -365,6 +366,7 @@ public class Competencias extends javax.swing.JFrame {
             JSONObject requisicao = new JSONObject();
             requisicao.put("operacao", this.atualizacao ? "atualizarCompetenciaExperiencia" : "cadastrarCompetenciaExperiencia");
             requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+            requisicao.put("token", AuthenticationModel.getInstance().getToken());
             JSONArray competenciasExperiencias = new JSONArray();
             JSONObject competenciaExperiencia = new JSONObject();
             competenciaExperiencia.put("competencia", cmbCompetenciaDialog.getSelectedItem().toString());
@@ -393,6 +395,7 @@ public class Competencias extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "visualizarCompetenciaExperiencia");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        requisicao.put("token", AuthenticationModel.getInstance().getToken());
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }

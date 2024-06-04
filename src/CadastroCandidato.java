@@ -93,6 +93,7 @@ public class CadastroCandidato extends javax.swing.JFrame {
             JSONObject message = new JSONObject();
             message.put("operacao", "visualizarCandidato");
             message.put("email", AuthenticationModel.getInstance().getEmail());
+            message.put("token", AuthenticationModel.getInstance().getToken());
             System.out.println("Cliente enviou: " + message);
             SocketModel.getInstance().getOut().println(message);
         }
@@ -202,7 +203,11 @@ public class CadastroCandidato extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             JSONObject message = new JSONObject();
-            message.put("operacao", this.atualizacao ? "atualizarCandidato" : "cadastrarCandidato");
+            message.put("operacao", "cadastrarCandidato");
+            if (this.atualizacao) {
+                message.put("operacao", "atualizarCandidato");
+                message.put("token", AuthenticationModel.getInstance().getToken());
+            }
             message.put("nome", nome);
             message.put("email", email);
             message.put("senha", senha);

@@ -125,6 +125,7 @@ public class Vagas extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "listarVagas");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        requisicao.put("token", AuthenticationModel.getInstance().getToken());
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }
@@ -165,7 +166,6 @@ public class Vagas extends javax.swing.JFrame {
 
         dialogo.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         dialogo.setTitle("CRIAR VAGA");
-        dialogo.setPreferredSize(new java.awt.Dimension(330, 530));
         dialogo.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblTituloDialog.setText("Criação de vaga");
@@ -337,6 +337,7 @@ public class Vagas extends javax.swing.JFrame {
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "visualizarVaga");
         requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        requisicao.put("token", AuthenticationModel.getInstance().getToken());
         requisicao.put("idVaga", this.idVaga);
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
@@ -353,6 +354,7 @@ public class Vagas extends javax.swing.JFrame {
             JSONObject requisicao = new JSONObject();
             requisicao.put("operacao", "apagarVaga");
             requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+            requisicao.put("token", AuthenticationModel.getInstance().getToken());
             requisicao.put("idVaga", this.tblVagas.getValueAt(this.tblVagas.getSelectedRow(), 0).toString());
             System.out.println("Cliente enviou: " + requisicao);
             SocketModel.getInstance().getOut().println(requisicao);
@@ -376,6 +378,7 @@ public class Vagas extends javax.swing.JFrame {
                 requisicao.put("idVaga", idVaga);
             }
             requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+            requisicao.put("token", AuthenticationModel.getInstance().getToken());
             requisicao.put("nome", txtNomeVaga.getText());
             requisicao.put("faixaSalarial", Double.parseDouble(txtFaixaSalarial.getText().replaceAll(",", ".")));
             requisicao.put("descricao", txtDescricao.getText());

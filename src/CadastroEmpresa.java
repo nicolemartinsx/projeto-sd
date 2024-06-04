@@ -96,6 +96,7 @@ public class CadastroEmpresa extends javax.swing.JFrame {
             JSONObject message = new JSONObject();
             message.put("operacao", "visualizarEmpresa");
             message.put("email", AuthenticationModel.getInstance().getEmail());
+            message.put("token", AuthenticationModel.getInstance().getToken());
             System.out.println("Cliente enviou: " + message);
             SocketModel.getInstance().getOut().println(message);
         }
@@ -247,7 +248,11 @@ public class CadastroEmpresa extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Senha deve conter apenas números!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             JSONObject message = new JSONObject();
-            message.put("operacao", this.atualizacao ? "atualizarEmpresa" : "cadastrarEmpresa");
+            message.put("operacao", "cadastrarEmpresa");
+            if (this.atualizacao) {
+                message.put("operacao", "atualizarEmpresa");
+                message.put("token", AuthenticationModel.getInstance().getToken());
+            }
             message.put("razaoSocial", razaoSocial);
             message.put("email", email);
             message.put("cnpj", cnpj);

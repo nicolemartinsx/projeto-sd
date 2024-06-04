@@ -86,6 +86,17 @@ public class Server extends Thread {
                 JSONObject resposta = new JSONObject();
                 resposta.put("operacao", requisicao.getString("operacao"));
 
+                String operacao = requisicao.getString("operacao");
+                if (!operacao.contains("loginCandidato") && !operacao.contains("loginEmpresa") && !operacao.contains("cadastrarCandidato") && !operacao.contains("cadastrarEmpresa")) {
+                    if (!this.tokens.containsKey(requisicao.getString("token"))) {
+                        resposta.put("status", "401");
+                        resposta.put("mensagem", "Token inválido");
+                        System.out.println("Servidor enviou: " + resposta);
+                        out.println(resposta);
+                        continue;
+                    }
+                }
+
                 switch (requisicao.getString("operacao")) {
                     case "cadastrarCandidato":
                         try (PreparedStatement emailPS = conn.prepareStatement("SELECT id_candidato FROM candidato WHERE email = ?;")) {
