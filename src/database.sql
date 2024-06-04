@@ -47,8 +47,10 @@ CREATE TABLE empresa (
 CREATE TABLE vaga (
     id_vaga INT NOT NULL AUTO_INCREMENT,
     id_empresa INT NOT NULL,
+    nome VARCHAR(255) NOT NULL,
     faixa_salarial DOUBLE NOT NULL,
     descricao VARCHAR(255) NOT NULL,
+    estado VARCHAR(20) NOT NULL,
     PRIMARY KEY (id_vaga),
     FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
 );

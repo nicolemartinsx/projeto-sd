@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -514,6 +515,191 @@ public class Server extends Thread {
                                     resposta.put("mensagem", "Candidato não encontrado");
                                 }
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "listarVagas":
+                        try (PreparedStatement empresaPS = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ?;")) {
+                            empresaPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet empresa = empresaPS.executeQuery()) {
+                                if (empresa.next()) {
+
+                                    try (PreparedStatement vagasPS = conn.prepareStatement("SELECT id_vaga, nome FROM vaga where id_empresa = ?;")) {
+                                        vagasPS.setInt(1, empresa.getInt("id_empresa"));
+                                        try (ResultSet vagasRS = vagasPS.executeQuery()) {
+                                            JSONArray vagas = new JSONArray();
+                                            while (vagasRS.next()) {
+                                                JSONObject vaga = new JSONObject();
+                                                vaga.put("nomeVaga", vagasRS.getString("nome"));
+                                                vaga.put("idVaga", vagasRS.getInt("id_vaga"));
+                                                vagas.put(vaga);
+                                            }
+                                            resposta.put("status", 200);
+                                            resposta.put("vagas", vagas);
+                                        }
+                                    }
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Empresa não encontrada");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "visualizarVaga":
+                        try (PreparedStatement vagasPS = conn.prepareStatement("SELECT faixa_salarial, descricao, estado FROM vaga where id_vaga = ?;")) {
+                            vagasPS.setInt(1, requisicao.getInt("idVaga"));
+                            try (ResultSet vagaRS = vagasPS.executeQuery()) {
+                                if (vagaRS.next()) {
+
+                                    JSONArray competencias = new JSONArray();
+                                    try (PreparedStatement competenciasPS = conn.prepareStatement("SELECT competencia.competencia as nome FROM vagacompetencia JOIN competencia ON vagacompetencia.id_competencia = competencia.id_competencia where vagacompetencia.id_vaga = ?;")) {
+                                        competenciasPS.setInt(1, requisicao.getInt("idVaga"));
+                                        try (ResultSet competenciasRS = competenciasPS.executeQuery()) {
+                                            while (competenciasRS.next()) {
+                                                competencias.put(competenciasRS.getString("nome"));
+                                            }
+                                        }
+                                    }
+
+                                    resposta.put("status", 201);
+                                    resposta.put("faixaSalarial", vagaRS.getDouble("faixa_salarial"));
+                                    resposta.put("descricao", vagaRS.getString("descricao"));
+                                    resposta.put("estado", vagaRS.getString("estado"));
+                                    resposta.put("competencias", competencias);
+                                } else {
+                                    resposta.put("status", 404);
+                                    resposta.put("mensagem", "Vaga não encontrada");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "cadastrarVaga":
+                        try (PreparedStatement empresaPS = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ?;")) {
+                            empresaPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet empresa = empresaPS.executeQuery()) {
+                                if (empresa.next()) {
+                                    try (PreparedStatement vagaPS = conn.prepareStatement("INSERT INTO vaga (id_empresa, nome, faixa_salarial, descricao, estado) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+                                        vagaPS.setInt(1, empresa.getInt("id_empresa"));
+                                        vagaPS.setString(2, requisicao.getString("nome"));
+                                        vagaPS.setDouble(3, requisicao.getDouble("faixaSalarial"));
+                                        vagaPS.setString(4, requisicao.getString("descricao"));
+                                        vagaPS.setString(5, requisicao.getString("estado"));
+                                        vagaPS.executeUpdate();
+
+                                        try (ResultSet generatedKeys = vagaPS.getGeneratedKeys()) {
+                                            if (generatedKeys.next()) {
+
+                                                // Associando as competencias a vaga
+                                                JSONArray competencias = requisicao.getJSONArray("competencias");
+                                                for (int i = 0; i < competencias.length(); i++) {
+                                                    try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT id_competencia FROM competencia WHERE competencia = ?;")) {
+                                                        competenciaPS.setString(1, (String) competencias.get(i));
+                                                        try (ResultSet competenciaRS = competenciaPS.executeQuery()) {
+                                                            if (competenciaRS.next()) {
+                                                                try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO vagacompetencia (id_vaga, id_competencia) VALUES (?, ?);")) {
+                                                                    preparedStatement.setInt(1, generatedKeys.getInt(1));
+                                                                    preparedStatement.setInt(2, competenciaRS.getInt("id_competencia"));
+                                                                    preparedStatement.executeUpdate();
+                                                                }
+                                                                resposta.put("status", 201);
+                                                                resposta.put("mensagem", "Vaga cadastrada com sucesso");
+
+                                                            } else {
+                                                                resposta.put("status", 422);
+                                                                resposta.put("mensagem", "Competência não encontrada");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                            } else {
+                                                resposta.put("status", 422);
+                                                resposta.put("mensagem", "Falha ao criar vaga");
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Empresa não encontrada");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "atualizarVaga":
+                        try (PreparedStatement vagaPS = conn.prepareStatement("UPDATE vaga SET nome = ?, faixa_salarial = ?, descricao = ?, estado = ? WHERE id_vaga = ?;")) {
+                            vagaPS.setString(1, requisicao.getString("nome"));
+                            vagaPS.setDouble(2, requisicao.getDouble("faixaSalarial"));
+                            vagaPS.setString(3, requisicao.getString("descricao"));
+                            vagaPS.setString(4, requisicao.getString("estado"));
+                            vagaPS.setInt(5, requisicao.getInt("idVaga"));
+                            vagaPS.executeUpdate();
+
+                            try (PreparedStatement apagarCompetenciasPS = conn.prepareStatement("DELETE FROM vagacompetencia WHERE id_vaga = ?;")) {
+                                apagarCompetenciasPS.setInt(1, requisicao.getInt("idVaga"));
+                                apagarCompetenciasPS.executeUpdate();
+
+                                // Associando as competencias a vaga
+                                JSONArray competencias = requisicao.getJSONArray("competencias");
+                                for (int i = 0; i < competencias.length(); i++) {
+                                    try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT id_competencia FROM competencia WHERE competencia = ?;")) {
+                                        competenciaPS.setString(1, (String) competencias.get(i));
+                                        try (ResultSet competenciaRS = competenciaPS.executeQuery()) {
+                                            if (competenciaRS.next()) {
+                                                try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO vagacompetencia (id_vaga, id_competencia) VALUES (?, ?);")) {
+                                                    preparedStatement.setInt(1, requisicao.getInt("idVaga"));
+                                                    preparedStatement.setInt(2, competenciaRS.getInt("id_competencia"));
+                                                    preparedStatement.executeUpdate();
+                                                }
+                                                resposta.put("status", 201);
+                                                resposta.put("mensagem", "Vaga atualizada com sucesso");
+                                            } else {
+                                                resposta.put("status", 422);
+                                                resposta.put("mensagem", "Competência não encontrada");
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "apagarVaga":
+                        try (PreparedStatement apagarCompetenciasPS = conn.prepareStatement("DELETE FROM vagacompetencia WHERE id_vaga = ?;")) {
+                            apagarCompetenciasPS.setInt(1, requisicao.getInt("idVaga"));
+                            apagarCompetenciasPS.executeUpdate();
+
+                            try (PreparedStatement vagaPS = conn.prepareStatement("DELETE FROM vaga WHERE id_vaga = ?")) {
+                                vagaPS.setInt(1, requisicao.getInt("idVaga"));
+                                vagaPS.executeUpdate();
+
+                                resposta.put("status", 201);
+                                resposta.put("mensagem", "Vaga apagada com sucesso");
+                            }
+
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             resposta.put("status", 422);

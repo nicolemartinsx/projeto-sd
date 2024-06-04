@@ -107,6 +107,8 @@ public class Inicio extends javax.swing.JFrame {
         
         if (!AuthenticationModel.getInstance().getCandidato()) {
             this.btnCompetencias.setVisible(false);
+        } else {
+            this.btnVagas.setVisible(false);
         }
     }
 
@@ -125,8 +127,10 @@ public class Inicio extends javax.swing.JFrame {
         btnApagar = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
         btnCompetencias = new javax.swing.JButton();
+        btnVagas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("HOME");
 
         jLabel2.setText("Bem vindo!");
 
@@ -165,37 +169,47 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
+        btnVagas.setText("Vagas");
+        btnVagas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVagasActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(41, 41, 41)
+                .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2)
                     .addComponent(btnPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnApagar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCompetencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(83, Short.MAX_VALUE))
+                    .addComponent(btnCompetencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnVagas, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(48, 48, 48)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(31, 31, 31)
                 .addComponent(jLabel2)
                 .addGap(18, 18, 18)
                 .addComponent(btnPerfil)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnCompetencias)
+                .addGap(12, 12, 12)
+                .addComponent(btnVagas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnAtualizar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnApagar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLogout)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         pack();
@@ -240,12 +254,18 @@ public class Inicio extends javax.swing.JFrame {
         new Competencias();
     }//GEN-LAST:event_btnCompetenciasActionPerformed
 
+    private void btnVagasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVagasActionPerformed
+        this.dispose();
+        new Vagas();
+    }//GEN-LAST:event_btnVagasActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApagar;
     private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnCompetencias;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPerfil;
+    private javax.swing.JButton btnVagas;
     private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 }
