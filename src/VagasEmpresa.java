@@ -10,12 +10,12 @@ import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Vagas extends javax.swing.JFrame {
+public class VagasEmpresa extends javax.swing.JFrame {
 
     private boolean atualizacao = false;
     private Integer idVaga = null;
 
-    public Vagas() {
+    public VagasEmpresa() {
         this.setVisible(true);
 
         new Thread(() -> {
@@ -195,8 +195,8 @@ public class Vagas extends javax.swing.JFrame {
 
         rbgEstado.add(rbtnDisponivel);
         rbtnDisponivel.setSelected(true);
-        rbtnDisponivel.setText("Disponivel");
-        rbtnDisponivel.setActionCommand("Disponível");
+        rbtnDisponivel.setText("Disponivel/Divulgável");
+        rbtnDisponivel.setActionCommand("Disponivel/Divulgável");
         dialogo.getContentPane().add(rbtnDisponivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, -1, -1));
 
         jLabel6.setText("Estado");
@@ -365,9 +365,9 @@ public class Vagas extends javax.swing.JFrame {
         if (txtNomeVaga.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Preencha o nome da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (txtFaixaSalarial.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Preencha o nome da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Preencha a faixa salarial da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (txtDescricao.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Preencha o nome da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Preencha o descrição da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (listaCompetencias.getSelectedValuesList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione ao menos uma competência!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {

@@ -107,8 +107,6 @@ public class Inicio extends javax.swing.JFrame {
         
         if (!AuthenticationModel.getInstance().getCandidato()) {
             this.btnCompetencias.setVisible(false);
-        } else {
-            this.btnVagas.setVisible(false);
         }
     }
 
@@ -258,7 +256,11 @@ public class Inicio extends javax.swing.JFrame {
 
     private void btnVagasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVagasActionPerformed
         this.dispose();
-        new Vagas();
+        if (AuthenticationModel.getInstance().getCandidato()) {
+            new VagasCandidato();
+        } else {
+            new VagasEmpresa();
+        }
     }//GEN-LAST:event_btnVagasActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

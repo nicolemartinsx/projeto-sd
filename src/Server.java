@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -88,7 +90,7 @@ public class Server extends Thread {
 
                 String operacao = requisicao.getString("operacao");
                 if (!operacao.contains("loginCandidato") && !operacao.contains("loginEmpresa") && !operacao.contains("cadastrarCandidato") && !operacao.contains("cadastrarEmpresa")) {
-                    if (!this.tokens.containsKey(requisicao.getString("token"))) {
+                    if (!requisicao.has("token") || !this.tokens.containsKey(requisicao.getString("token"))) {
                         resposta.put("status", "401");
                         resposta.put("mensagem", "Token inválido");
                         System.out.println("Servidor enviou: " + resposta);
@@ -557,6 +559,54 @@ public class Server extends Thread {
                                     resposta.put("status", 422);
                                     resposta.put("mensagem", "Empresa não encontrada");
                                 }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "filtrarVagas":
+                        JSONObject filtros = requisicao.getJSONObject("filtros");
+                        boolean tipoIgual = filtros.getString("tipo").equals("AND");
+                        List<Object> filtroCompetencias = filtros.getJSONArray("competencias").toList();
+                        String sql = "SELECT v.id_vaga, v.nome, v.faixa_salarial, v.descricao, v.estado FROM vaga v JOIN vagacompetencia vc ON v.id_vaga=vc.id_vaga JOIN competencia c ON vc.id_competencia=c.id_competencia WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ") GROUP BY v.id_vaga";
+                        if (tipoIgual) {
+                            sql += " HAVING COUNT(vc.id_vaga_competencia) >= ?";
+                        }
+                        try (PreparedStatement vagasPS = conn.prepareStatement(sql)) {
+                            int index = 1;
+                            for (Object competencia : filtroCompetencias) {
+                                vagasPS.setString(index++, (String) competencia);
+                            }
+                            if (tipoIgual) {
+                                vagasPS.setInt(index, filtroCompetencias.size());
+                            }
+                            try (ResultSet vagasRS = vagasPS.executeQuery()) {
+                                JSONArray vagas = new JSONArray();
+                                while (vagasRS.next()) {
+                                    JSONObject vaga = new JSONObject();
+                                    vaga.put("idVaga", vagasRS.getInt("id_vaga"));
+                                    vaga.put("nomeVaga", vagasRS.getString("nome"));
+                                    vaga.put("faixaSalarial", vagasRS.getDouble("faixa_salarial"));
+                                    vaga.put("descricao", vagasRS.getString("descricao"));
+                                    vaga.put("estado", vagasRS.getString("estado"));
+                                    JSONArray competencias = new JSONArray();
+                                    try (PreparedStatement competenciasPS = conn.prepareStatement("SELECT competencia.competencia as nome FROM vagacompetencia JOIN competencia ON vagacompetencia.id_competencia = competencia.id_competencia where vagacompetencia.id_vaga = ?;")) {
+                                        competenciasPS.setInt(1, vagasRS.getInt("id_vaga"));
+                                        try (ResultSet competenciasRS = competenciasPS.executeQuery()) {
+                                            while (competenciasRS.next()) {
+                                                competencias.put(competenciasRS.getString("nome"));
+                                            }
+                                        }
+                                    }
+                                    vaga.put("competencias", competencias);
+
+                                    vagas.put(vaga);
+                                }
+                                resposta.put("status", 200);
+                                resposta.put("vagas", vagas);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();

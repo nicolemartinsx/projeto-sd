@@ -50,7 +50,7 @@ CREATE TABLE vaga (
     nome VARCHAR(255) NOT NULL,
     faixa_salarial DOUBLE NOT NULL,
     descricao VARCHAR(255) NOT NULL,
-    estado VARCHAR(20) NOT NULL,
+    estado VARCHAR(50) NOT NULL,
     PRIMARY KEY (id_vaga),
     FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
 );

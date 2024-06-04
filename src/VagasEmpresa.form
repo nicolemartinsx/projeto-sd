@@ -107,8 +107,8 @@
               <ComponentRef name="rbgEstado"/>
             </Property>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Disponivel"/>
-            <Property name="actionCommand" type="java.lang.String" value="Dispon&#xed;vel"/>
+            <Property name="text" type="java.lang.String" value="Disponivel/Divulg&#xe1;vel"/>
+            <Property name="actionCommand" type="java.lang.String" value="Disponivel/Divulg&#xe1;vel"/>
           </Properties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
