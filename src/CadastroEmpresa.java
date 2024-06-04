@@ -64,6 +64,22 @@ public class CadastroEmpresa extends javax.swing.JFrame {
                         }
                         break;
 
+                    case "visualizarEmpresa":
+                        switch (mensagem.getInt("status")) {
+                            case 201:
+                                this.txtRazaoSocial.setText(mensagem.getString("razaoSocial"));
+                                this.txtCNPJ.setText(mensagem.getString("cnpj"));
+                                this.txtDescricao.setText(mensagem.getString("descricao"));
+                                this.txtRamo.setText(mensagem.getString("ramo"));
+                                this.txtEmail.setText(AuthenticationModel.getInstance().getEmail());
+                                this.txtPassword.setText(mensagem.getString("senha"));
+                                break;
+                            default:
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+                        }
+                        break;
+
                     default:
                         System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
                         break;
@@ -73,11 +89,15 @@ public class CadastroEmpresa extends javax.swing.JFrame {
         initComponents();
 
         if (atualizacao) {
-            txtEmail.setEnabled(false);
-            txtEmail.setText(AuthenticationModel.getInstance().getEmail());
             jLabel2.setText("Atualização de cadastro");
             btnCadastrar.setText("Atualizar cadastro");
-            this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            txtEmail.setEnabled(false);
+
+            JSONObject message = new JSONObject();
+            message.put("operacao", "visualizarEmpresa");
+            message.put("email", AuthenticationModel.getInstance().getEmail());
+            System.out.println("Cliente enviou: " + message);
+            SocketModel.getInstance().getOut().println(message);
         }
     }
 
@@ -108,9 +128,10 @@ public class CadastroEmpresa extends javax.swing.JFrame {
         btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("CADASTRAR EMPRESA");
         setLocation(new java.awt.Point(200, 200));
 
-        btnCadastrar.setText("Realizar cadastro");
+        btnCadastrar.setText("Cadastrar");
         btnCadastrar.addActionListener(this::btnCadastrarActionPerformed);
 
         jLabel2.setText("Cadastro de Empresa");
@@ -160,7 +181,7 @@ public class CadastroEmpresa extends javax.swing.JFrame {
                         .addComponent(btnVoltar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnCadastrar)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

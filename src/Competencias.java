@@ -113,6 +113,7 @@ public class Competencias extends javax.swing.JFrame {
         btnExcluir = new javax.swing.JButton();
 
         dialogo.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        dialogo.setTitle("ADICIONAR COMPETÊNCIA");
         dialogo.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 
         cmbCompetenciaDialog.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
@@ -201,6 +202,7 @@ public class Competencias extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("COMPETÊNCIAS");
 
         tblCompetencias.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {

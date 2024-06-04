@@ -64,6 +64,19 @@ public class CadastroCandidato extends javax.swing.JFrame {
                         }
                         break;
 
+                    case "visualizarCandidato":
+                        switch (mensagem.getInt("status")) {
+                            case 201:
+                                this.txtNome.setText(mensagem.getString("nome"));
+                                this.txtEmail.setText(AuthenticationModel.getInstance().getEmail());
+                                this.txtPassword.setText(mensagem.getString("senha"));
+                                break;
+                            default:
+                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                break;
+                        }
+                        break;
+
                     default:
                         System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
                         break;
@@ -73,11 +86,15 @@ public class CadastroCandidato extends javax.swing.JFrame {
         initComponents();
 
         if (atualizacao) {
-            txtEmail.setEnabled(false);
-            txtEmail.setText(AuthenticationModel.getInstance().getEmail());
             labelCadastro.setText("Atualização de cadastro");
-            btnCadastrar.setText("Atualizar cadastro");
-            this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+            btnCadastrar.setText("Atualizar");
+            txtEmail.setEnabled(false);
+
+            JSONObject message = new JSONObject();
+            message.put("operacao", "visualizarCandidato");
+            message.put("email", AuthenticationModel.getInstance().getEmail());
+            System.out.println("Cliente enviou: " + message);
+            SocketModel.getInstance().getOut().println(message);
         }
     }
 
@@ -101,9 +118,10 @@ public class CadastroCandidato extends javax.swing.JFrame {
         btnVoltar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("CADASTRAR CANDIDATO");
         setLocation(new java.awt.Point(200, 200));
 
-        btnCadastrar.setText("Realizar cadastro");
+        btnCadastrar.setText("Cadastrar");
         btnCadastrar.addActionListener(this::btnCadastrarActionPerformed);
 
         labelCadastro.setText("Cadastro de candidato");
@@ -135,9 +153,9 @@ public class CadastroCandidato extends javax.swing.JFrame {
                             .addComponent(txtNome, javax.swing.GroupLayout.Alignment.LEADING)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVoltar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                         .addComponent(btnCadastrar)))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
