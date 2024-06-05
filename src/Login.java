@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.json.JSONObject;
 
 public class Login extends javax.swing.JFrame {
@@ -27,31 +28,34 @@ public class Login extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "loginCandidato":
-                    case "loginEmpresa":
-                        switch (mensagem.getInt("status")) {
-                            case 200:
-                                AuthenticationModel model = AuthenticationModel.getInstance();
-                                model.setCandidato("loginCandidato".equals(mensagem.getString("operacao")));
-                                model.setEmail(txtLogin.getText());
-                                model.setToken(mensagem.getString("token"));
-                                this.dispose();
-                                Inicio inicio = new Inicio();
-                                inicio.setVisible(true);
-                                break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "loginCandidato":
+                        case "loginEmpresa":
+                            switch (mensagem.getInt("status")) {
+                                case 200:
+                                    AuthenticationModel model = AuthenticationModel.getInstance();
+                                    model.setCandidato("loginCandidato".equals(mensagem.getString("operacao")));
+                                    model.setEmail(txtLogin.getText());
+                                    model.setToken(mensagem.getString("token"));
+                                    this.dispose();
+                                    Inicio inicio = new Inicio();
+                                    inicio.setVisible(true);
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                            }
+                            break;
+
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
         initComponents();

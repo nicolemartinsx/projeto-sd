@@ -1,13 +1,10 @@
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,47 +32,50 @@ public class Competencias extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "visualizarCompetenciaExperiencia":
-                        switch (mensagem.getInt("status")) {
-                            case 200:
-                                DefaultTableModel model = (DefaultTableModel) tblCompetencias.getModel();
-                                for (Object competenciaExperiencia : mensagem.getJSONArray("competenciaExperiencia")) {
-                                    model.addRow(new String[]{
-                                        ((JSONObject) competenciaExperiencia).getString("competencia"),
-                                        ((JSONObject) competenciaExperiencia).getString("experiencia")}
-                                    );
-                                }
-                                break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "visualizarCompetenciaExperiencia":
+                            switch (mensagem.getInt("status")) {
+                                case 200:
+                                    DefaultTableModel model = (DefaultTableModel) tblCompetencias.getModel();
+                                    for (Object competenciaExperiencia : mensagem.getJSONArray("competenciaExperiencia")) {
+                                        model.addRow(new String[]{
+                                            ((JSONObject) competenciaExperiencia).getString("competencia"),
+                                            ((JSONObject) competenciaExperiencia).getString("experiencia")}
+                                        );
+                                    }
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "cadastrarCompetenciaExperiencia":
-                    case "atualizarCompetenciaExperiencia":
-                    case "apagarCompetenciaExperiencia":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                                dialogo.setVisible(false);
-                                this.listarCompetenciaExperiencia();
-                                break;
+                            }
+                            break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                        case "cadastrarCompetenciaExperiencia":
+                        case "atualizarCompetenciaExperiencia":
+                        case "apagarCompetenciaExperiencia":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                    dialogo.setVisible(false);
+                                    this.listarCompetenciaExperiencia();
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                            }
+                            break;
+
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
 
@@ -324,7 +324,7 @@ public class Competencias extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Selecione uma linha na tabela", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         this.atualizacao = true;
         this.cmbCompetenciaDialog.setSelectedItem(this.tblCompetencias.getValueAt(this.tblCompetencias.getSelectedRow(), 0).toString());
         this.txtExperienciaDialog.setText(this.tblCompetencias.getValueAt(this.tblCompetencias.getSelectedRow(), 1).toString());
@@ -339,7 +339,7 @@ public class Competencias extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Selecione uma linha na tabela", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         int resposta = JOptionPane.showConfirmDialog(null, "Deseja apagar esta competência?", "Excluir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (resposta == JOptionPane.YES_OPTION) {
             JSONObject requisicao = new JSONObject();

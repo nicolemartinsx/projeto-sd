@@ -1,11 +1,10 @@
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,32 +32,35 @@ public class VagasCandidato extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "filtrarVagas":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                this.vagas = mensagem.getJSONArray("vagas");
 
-                                DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
-                                for (Object vaga : this.vagas) {
-                                    model.addRow(new String[]{
-                                        String.valueOf(((JSONObject) vaga).getInt("idVaga")),
-                                        ((JSONObject) vaga).getString("nomeVaga")}
-                                    );
-                                }
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "filtrarVagas":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    this.vagas = mensagem.getJSONArray("vagas");
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                                    DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
+                                    for (Object vaga : this.vagas) {
+                                        model.addRow(new String[]{
+                                            String.valueOf(((JSONObject) vaga).getInt("idVaga")),
+                                            ((JSONObject) vaga).getString("nomeVaga")}
+                                        );
+                                    }
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                            }
+                            break;
+
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
 
@@ -199,6 +201,11 @@ public class VagasCandidato extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnVisualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisualizarActionPerformed
+        if (this.tblVagas.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione uma linha na tabela", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int idVaga = Integer.parseInt(this.tblVagas.getValueAt(this.tblVagas.getSelectedRow(), 0).toString());
         for (int i = 0; i < vagas.length(); i++) {
             JSONObject vaga = vagas.getJSONObject(i);

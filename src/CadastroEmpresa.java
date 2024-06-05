@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.json.JSONObject;
 
 public class CadastroEmpresa extends javax.swing.JFrame {
@@ -30,60 +31,63 @@ public class CadastroEmpresa extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "cadastrarEmpresa":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                AuthenticationModel model = AuthenticationModel.getInstance();
-                                model.setCandidato(false);
-                                model.setEmail(txtEmail.getText());
-                                model.setToken(mensagem.getString("token"));
-                                JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                                this.dispose();
-                                Inicio inicio = new Inicio();
-                                inicio.setVisible(true);
-                                break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "cadastrarEmpresa":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    AuthenticationModel model = AuthenticationModel.getInstance();
+                                    model.setCandidato(false);
+                                    model.setEmail(txtEmail.getText());
+                                    model.setToken(mensagem.getString("token"));
+                                    JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                    this.dispose();
+                                    Inicio inicio = new Inicio();
+                                    inicio.setVisible(true);
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "atualizarEmpresa":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                                this.dispose();
-                                new Inicio();
-                                break;
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
-                        }
-                        break;
+                            }
+                            break;
 
-                    case "visualizarEmpresa":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                this.txtRazaoSocial.setText(mensagem.getString("razaoSocial"));
-                                this.txtCNPJ.setText(mensagem.getString("cnpj"));
-                                this.txtDescricao.setText(mensagem.getString("descricao"));
-                                this.txtRamo.setText(mensagem.getString("ramo"));
-                                this.txtEmail.setText(AuthenticationModel.getInstance().getEmail());
-                                this.txtPassword.setText(mensagem.getString("senha"));
-                                break;
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
-                        }
-                        break;
+                        case "atualizarEmpresa":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                    this.dispose();
+                                    new Inicio();
+                                    break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+                            }
+                            break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                        case "visualizarEmpresa":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    this.txtRazaoSocial.setText(mensagem.getString("razaoSocial"));
+                                    this.txtCNPJ.setText(mensagem.getString("cnpj"));
+                                    this.txtDescricao.setText(mensagem.getString("descricao"));
+                                    this.txtRamo.setText(mensagem.getString("ramo"));
+                                    this.txtEmail.setText(AuthenticationModel.getInstance().getEmail());
+                                    this.txtPassword.setText(mensagem.getString("senha"));
+                                    break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+                            }
+                            break;
+
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
         initComponents();

@@ -1,13 +1,11 @@
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class VagasEmpresa extends javax.swing.JFrame {
@@ -34,79 +32,82 @@ public class VagasEmpresa extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "listarVagas":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
-                                for (Object vagas : mensagem.getJSONArray("vagas")) {
-                                    model.addRow(new String[]{
-                                        String.valueOf(((JSONObject) vagas).getInt("idVaga")),
-                                        ((JSONObject) vagas).getString("nome")}
-                                    );
-                                }
-                                break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "listarVagas":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
+                                    for (Object vagas : mensagem.getJSONArray("vagas")) {
+                                        model.addRow(new String[]{
+                                            String.valueOf(((JSONObject) vagas).getInt("idVaga")),
+                                            ((JSONObject) vagas).getString("nome")}
+                                        );
+                                    }
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "visualizarVaga":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                this.atualizacao = true;
-                                this.txtFaixaSalarial.setText(String.valueOf(mensagem.getDouble("faixaSalarial")));
-                                this.txtDescricao.setText(mensagem.getString("descricao"));
-                                this.rbtnDisponivel.setSelected(true);
+                            }
+                            break;
 
-                                int[] indices = new int[mensagem.getJSONArray("competencias").length()];
-                                int counter = 0;
-                                for (int i = 0; i < this.listaCompetencias.getModel().getSize(); i++) {
-                                    String competencia = this.listaCompetencias.getModel().getElementAt(i);
-                                    for (int j = 0; j < mensagem.getJSONArray("competencias").length(); j++) {
-                                        if (competencia.equals(mensagem.getJSONArray("competencias").getString(j))) {
-                                            indices[counter] = i;
-                                            counter++;
+                        case "visualizarVaga":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    this.atualizacao = true;
+                                    this.txtFaixaSalarial.setText(String.valueOf(mensagem.getDouble("faixaSalarial")));
+                                    this.txtDescricao.setText(mensagem.getString("descricao"));
+                                    this.rbtnDisponivel.setSelected(true);
+
+                                    int[] indices = new int[mensagem.getJSONArray("competencias").length()];
+                                    int counter = 0;
+                                    for (int i = 0; i < this.listaCompetencias.getModel().getSize(); i++) {
+                                        String competencia = this.listaCompetencias.getModel().getElementAt(i);
+                                        for (int j = 0; j < mensagem.getJSONArray("competencias").length(); j++) {
+                                            if (competencia.equals(mensagem.getJSONArray("competencias").getString(j))) {
+                                                indices[counter] = i;
+                                                counter++;
+                                            }
                                         }
                                     }
-                                }
-                                this.listaCompetencias.setSelectedIndices(indices);
+                                    this.listaCompetencias.setSelectedIndices(indices);
 
-                                this.lblTituloDialog.setText("Atualizar vaga");
-                                this.btnSalvarDialog.setText("Atualizar");
-                                this.dialogo.setVisible(true);
-                                break;
+                                    this.lblTituloDialog.setText("Atualizar vaga");
+                                    this.btnSalvarDialog.setText("Atualizar");
+                                    this.dialogo.setVisible(true);
+                                    break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+                            }
+                            break;
 
-                    case "cadastrarVaga":
-                    case "atualizarVaga":
-                    case "apagarVaga":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                                dialogo.setVisible(false);
-                                this.listarVagas();
-                                break;
+                        case "cadastrarVaga":
+                        case "atualizarVaga":
+                        case "apagarVaga":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                    dialogo.setVisible(false);
+                                    this.listarVagas();
+                                    break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                        }
-                        break;
+                            }
+                            break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
 

@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.json.JSONObject;
 
 public class CadastroCandidato extends javax.swing.JFrame {
@@ -30,57 +31,60 @@ public class CadastroCandidato extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "cadastrarCandidato":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                AuthenticationModel model = AuthenticationModel.getInstance();
-                                model.setCandidato(true);
-                                model.setEmail(txtEmail.getText());
-                                model.setToken(mensagem.getString("token"));
-                                JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                                this.dispose();
-                                Inicio inicio = new Inicio();
-                                inicio.setVisible(true);
-                                break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "cadastrarCandidato":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    AuthenticationModel model = AuthenticationModel.getInstance();
+                                    model.setCandidato(true);
+                                    model.setEmail(txtEmail.getText());
+                                    model.setToken(mensagem.getString("token"));
+                                    JOptionPane.showMessageDialog(null, "Cadastrado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                    this.dispose();
+                                    Inicio inicio = new Inicio();
+                                    inicio.setVisible(true);
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "atualizarCandidato":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                                this.dispose();
-                                new Inicio();
-                                break;
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
-                        }
-                        break;
+                            }
+                            break;
 
-                    case "visualizarCandidato":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                this.txtNome.setText(mensagem.getString("nome"));
-                                this.txtEmail.setText(AuthenticationModel.getInstance().getEmail());
-                                this.txtPassword.setText(mensagem.getString("senha"));
-                                break;
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
-                        }
-                        break;
+                        case "atualizarCandidato":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null, "Atualizado com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                                    this.dispose();
+                                    new Inicio();
+                                    break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+                            }
+                            break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                        case "visualizarCandidato":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    this.txtNome.setText(mensagem.getString("nome"));
+                                    this.txtEmail.setText(AuthenticationModel.getInstance().getEmail());
+                                    this.txtPassword.setText(mensagem.getString("senha"));
+                                    break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+                            }
+                            break;
+
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
         initComponents();

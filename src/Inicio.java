@@ -4,6 +4,7 @@ import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.json.JSONObject;
 
 public class Inicio extends javax.swing.JFrame {
@@ -30,81 +31,84 @@ public class Inicio extends javax.swing.JFrame {
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
-                switch (mensagem.getString("operacao")) {
-                    case "visualizarCandidato":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null,
-                                        "Nome: " + mensagem.getString("nome") + "\n"
-                                        + "Email: " + AuthenticationModel.getInstance().getEmail() + "\n"
-                                        + "Senha: " + mensagem.getString("senha")
-                                );
-                                break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                SwingUtilities.invokeLater(() -> {
+                    switch (mensagem.getString("operacao")) {
+                        case "visualizarCandidato":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null,
+                                            "Nome: " + mensagem.getString("nome") + "\n"
+                                            + "Email: " + AuthenticationModel.getInstance().getEmail() + "\n"
+                                            + "Senha: " + mensagem.getString("senha")
+                                    );
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "visualizarEmpresa":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null,
-                                        "Razão social: " + mensagem.getString("razaoSocial") + "\n"
-                                        + "CNPJ: " + mensagem.getString("cnpj") + "\n"
-                                        + "Senha: " + mensagem.getString("senha") + "\n"
-                                        + "Ramo: " + mensagem.getString("ramo") + "\n"
-                                        + "Descrição: " + mensagem.getString("descricao")
-                                );
-                                break;
+                            }
+                            break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                        case "visualizarEmpresa":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null,
+                                            "Razão social: " + mensagem.getString("razaoSocial") + "\n"
+                                            + "CNPJ: " + mensagem.getString("cnpj") + "\n"
+                                            + "Senha: " + mensagem.getString("senha") + "\n"
+                                            + "Ramo: " + mensagem.getString("ramo") + "\n"
+                                            + "Descrição: " + mensagem.getString("descricao")
+                                    );
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "apagarCandidato":
-                    case "apagarEmpresa":
-                        switch (mensagem.getInt("status")) {
-                            case 201:
-                                JOptionPane.showMessageDialog(null, "Cadastro apagado com sucesso");
-                                AuthenticationModel model = AuthenticationModel.getInstance();
-                                model.setCandidato(null);
-                                model.setToken(null);
-                                model.setEmail(null);
-                                this.dispose();
-                                new Login();
-                                break;
+                            }
+                            break;
 
-                            default:
-                                JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
-                                break;
+                        case "apagarCandidato":
+                        case "apagarEmpresa":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null, "Cadastro apagado com sucesso");
+                                    AuthenticationModel model = AuthenticationModel.getInstance();
+                                    model.setCandidato(null);
+                                    model.setToken(null);
+                                    model.setEmail(null);
+                                    this.dispose();
+                                    new Login();
+                                    break;
 
-                        }
-                        break;
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
 
-                    case "logout":
-                        AuthenticationModel model = AuthenticationModel.getInstance();
-                        model.setCandidato(null);
-                        model.setToken(null);
-                        model.setEmail(null);
-                        this.dispose();
-                        new Login();
-                        break;
+                            }
+                            break;
 
-                    default:
-                        System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                        break;
-                }
+                        case "logout":
+                            AuthenticationModel model = AuthenticationModel.getInstance();
+                            model.setCandidato(null);
+                            model.setToken(null);
+                            model.setEmail(null);
+                            this.dispose();
+                            new Login();
+                            break;
+
+                        default:
+                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
+                            break;
+                    }
+                });
             }
         }).start();
 
         initComponents();
-        
+
         if (!AuthenticationModel.getInstance().getCandidato()) {
             this.btnCompetencias.setVisible(false);
         }
