@@ -37,12 +37,12 @@ public class VagasEmpresa extends javax.swing.JFrame {
                 switch (mensagem.getString("operacao")) {
                     case "listarVagas":
                         switch (mensagem.getInt("status")) {
-                            case 200:
+                            case 201:
                                 DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
                                 for (Object vagas : mensagem.getJSONArray("vagas")) {
                                     model.addRow(new String[]{
                                         String.valueOf(((JSONObject) vagas).getInt("idVaga")),
-                                        ((JSONObject) vagas).getString("nomeVaga")}
+                                        ((JSONObject) vagas).getString("nome")}
                                     );
                                 }
                                 break;
@@ -195,8 +195,8 @@ public class VagasEmpresa extends javax.swing.JFrame {
 
         rbgEstado.add(rbtnDisponivel);
         rbtnDisponivel.setSelected(true);
-        rbtnDisponivel.setText("Disponivel/Divulgável");
-        rbtnDisponivel.setActionCommand("Disponivel/Divulgável");
+        rbtnDisponivel.setText("Disponivel/Divulgavel");
+        rbtnDisponivel.setActionCommand("Disponivel/Divulgavel");
         dialogo.getContentPane().add(rbtnDisponivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, -1, -1));
 
         jLabel6.setText("Estado");
@@ -213,7 +213,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
         listaCompetencias.setValueIsAdjusting(true);
         jScrollPane2.setViewportView(listaCompetencias);
 
-        dialogo.getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 370, 290, 60));
+        dialogo.getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 370, 290, 80));
 
         btnCancelarDialog.setText("Cancelar");
         btnCancelarDialog.addActionListener(new java.awt.event.ActionListener() {
@@ -221,7 +221,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
                 btnCancelarDialogActionPerformed(evt);
             }
         });
-        dialogo.getContentPane().add(btnCancelarDialog, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, -1, -1));
+        dialogo.getContentPane().add(btnCancelarDialog, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 470, -1, -1));
 
         btnSalvarDialog.setText("Criar");
         btnSalvarDialog.addActionListener(new java.awt.event.ActionListener() {
@@ -229,7 +229,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
                 btnSalvarDialogActionPerformed(evt);
             }
         });
-        dialogo.getContentPane().add(btnSalvarDialog, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 450, -1, -1));
+        dialogo.getContentPane().add(btnSalvarDialog, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 470, -1, -1));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("VAGAS");

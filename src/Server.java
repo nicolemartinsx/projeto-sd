@@ -547,11 +547,11 @@ public class Server extends Thread {
                                             JSONArray vagas = new JSONArray();
                                             while (vagasRS.next()) {
                                                 JSONObject vaga = new JSONObject();
-                                                vaga.put("nomeVaga", vagasRS.getString("nome"));
+                                                vaga.put("nome", vagasRS.getString("nome"));
                                                 vaga.put("idVaga", vagasRS.getInt("id_vaga"));
                                                 vagas.put(vaga);
                                             }
-                                            resposta.put("status", 200);
+                                            resposta.put("status", 201);
                                             resposta.put("vagas", vagas);
                                         }
                                     }
@@ -605,12 +605,12 @@ public class Server extends Thread {
 
                                     vagas.put(vaga);
                                 }
-                                resposta.put("status", 200);
+                                resposta.put("status", 201);
                                 resposta.put("vagas", vagas);
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                            resposta.put("status", 404);
+                            resposta.put("status", 422);
                             resposta.put("mensagem", "Erro");
                         }
                         break;

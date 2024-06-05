@@ -36,7 +36,7 @@ public class VagasCandidato extends javax.swing.JFrame {
                 switch (mensagem.getString("operacao")) {
                     case "filtrarVagas":
                         switch (mensagem.getInt("status")) {
-                            case 200:
+                            case 201:
                                 this.vagas = mensagem.getJSONArray("vagas");
 
                                 DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
