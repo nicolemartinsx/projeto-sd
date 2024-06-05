@@ -29,8 +29,8 @@ CREATE TABLE candidatocompetencia (
     id_competencia INT NOT NULL,
     experiencia INT NOT NULL,
     PRIMARY KEY (id_candidato_competencia),
-    FOREIGN KEY (id_candidato) REFERENCES candidato(id_candidato),
-    FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia)
+    FOREIGN KEY (id_candidato) REFERENCES candidato(id_candidato) ON DELETE CASCADE,
+    FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia) ON DELETE CASCADE
 );
 
 CREATE TABLE empresa (
@@ -52,7 +52,7 @@ CREATE TABLE vaga (
     descricao VARCHAR(255) NOT NULL,
     estado VARCHAR(50) NOT NULL,
     PRIMARY KEY (id_vaga),
-    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa)
+    FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa) ON DELETE CASCADE
 );
 
 CREATE TABLE vagacompetencia (
@@ -60,8 +60,8 @@ CREATE TABLE vagacompetencia (
     id_vaga INT NOT NULL,
     id_competencia INT NOT NULL,
     PRIMARY KEY (id_vaga_competencia),
-    FOREIGN KEY (id_vaga) REFERENCES vaga(id_vaga),
-    FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia)
+    FOREIGN KEY (id_vaga) REFERENCES vaga(id_vaga) ON DELETE CASCADE,
+    FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia) ON DELETE CASCADE
 );
 
 INSERT INTO competencia (competencia) VALUES ('Python'), ('C#'), ('C++'), ('JS'), ('PHP'), ('Swift'), ('Java'), ('Go'), ('SQL'), ('Ruby'), ('HTML'), ('CSS'), ('NOSQL'), ('Flutter'), ('TypeScript'), ('Perl'), ('Cobol'), ('dotNet'), ('Kotlin'), ('Dart');
