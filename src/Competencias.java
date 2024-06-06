@@ -119,7 +119,7 @@ public class Competencias extends javax.swing.JFrame {
         cmbCompetenciaDialog.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
         cmbCompetenciaDialog.setSelectedItem(null);
 
-        jLabel4.setText("Experência");
+        jLabel4.setText("Experiência");
 
         txtExperienciaDialog.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txtExperienciaDialog.addActionListener(new java.awt.event.ActionListener() {

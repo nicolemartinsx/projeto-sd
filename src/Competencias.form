@@ -115,7 +115,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel4">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Exper&#xea;ncia"/>
+                <Property name="text" type="java.lang.String" value="Experi&#xea;ncia"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="txtExperienciaDialog">

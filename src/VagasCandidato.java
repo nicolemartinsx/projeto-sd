@@ -44,7 +44,7 @@ public class VagasCandidato extends javax.swing.JFrame {
                                     for (Object vaga : this.vagas) {
                                         model.addRow(new String[]{
                                             String.valueOf(((JSONObject) vaga).getInt("idVaga")),
-                                            ((JSONObject) vaga).getString("nomeVaga")}
+                                            ((JSONObject) vaga).getString("nome")}
                                         );
                                     }
                                     break;
@@ -185,6 +185,11 @@ public class VagasCandidato extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        if (this.listaCompetencias.getSelectedIndices().length == 0) {
+            JOptionPane.showMessageDialog(null, "Selecione ao menos uma competencia", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
         while (model.getRowCount() > 0) {
             model.removeRow(0);
@@ -212,7 +217,7 @@ public class VagasCandidato extends javax.swing.JFrame {
             if (vaga.getInt("idVaga") == idVaga) {
                 JSONArray competencias = vaga.getJSONArray("competencias");
                 JOptionPane.showMessageDialog(null,
-                        "Nome: " + vaga.getString("nomeVaga") + "\n"
+                        "Nome: " + vaga.getString("nome") + "\n"
                         + "Faixa salarial: " + vaga.getDouble("faixaSalarial") + "\n"
                         + "Descrição: " + vaga.getString("descricao") + "\n"
                         + "Estado: " + vaga.getString("estado") + "\n"

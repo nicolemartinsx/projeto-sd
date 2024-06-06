@@ -372,7 +372,7 @@ public class Server extends Thread {
                                                     }
                                                 }
                                             }
-                                            resposta.put("status", 200);
+                                            resposta.put("status", 201);
                                             resposta.put("competenciaExperiencia", competenciasExperiencias);
                                         }
                                     }
@@ -588,7 +588,7 @@ public class Server extends Thread {
                                 while (vagasRS.next()) {
                                     JSONObject vaga = new JSONObject();
                                     vaga.put("idVaga", vagasRS.getInt("id_vaga"));
-                                    vaga.put("nomeVaga", vagasRS.getString("nome"));
+                                    vaga.put("nome", vagasRS.getString("nome"));
                                     vaga.put("faixaSalarial", vagasRS.getDouble("faixa_salarial"));
                                     vaga.put("descricao", vagasRS.getString("descricao"));
                                     vaga.put("estado", vagasRS.getString("estado"));
