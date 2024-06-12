@@ -91,7 +91,7 @@ public class Client extends javax.swing.JFrame {
     private void btnAvancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancarActionPerformed
         try {
             Socket server = new Socket(txtIP.getText(), Integer.parseInt(txtPorta.getText()));
-            server.setSoTimeout(100);
+            server.setSoTimeout(50);
             SocketModel.getInstance().setSocket(server);
             this.dispose();
             new Login();

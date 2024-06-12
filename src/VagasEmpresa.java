@@ -60,7 +60,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
                                     this.atualizacao = true;
                                     this.txtFaixaSalarial.setText(String.valueOf(mensagem.getDouble("faixaSalarial")));
                                     this.txtDescricao.setText(mensagem.getString("descricao"));
-                                    this.rbtnDisponivel.setSelected(true);
+                                    this.txtEstado.setText(mensagem.getString("estado"));
 
                                     int[] indices = new int[mensagem.getJSONArray("competencias").length()];
                                     int counter = 0;
@@ -150,13 +150,12 @@ public class VagasEmpresa extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         txtDescricao = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
-        rbtnDisponivel = new javax.swing.JRadioButton();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listaCompetencias = new javax.swing.JList<>();
         btnCancelarDialog = new javax.swing.JButton();
         btnSalvarDialog = new javax.swing.JButton();
-        rbgEstado = new javax.swing.ButtonGroup();
+        txtEstado = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblVagas = new javax.swing.JTable();
@@ -194,12 +193,6 @@ public class VagasEmpresa extends javax.swing.JFrame {
         jLabel5.setText("Faixa salarial");
         dialogo.getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
 
-        rbgEstado.add(rbtnDisponivel);
-        rbtnDisponivel.setSelected(true);
-        rbtnDisponivel.setText("Disponivel/Divulgavel");
-        rbtnDisponivel.setActionCommand("Disponivel/Divulgavel");
-        dialogo.getContentPane().add(rbtnDisponivel, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, -1, -1));
-
         jLabel6.setText("Estado");
         dialogo.getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 290, -1, -1));
 
@@ -231,6 +224,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
             }
         });
         dialogo.getContentPane().add(btnSalvarDialog, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 470, -1, -1));
+        dialogo.getContentPane().add(txtEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 290, -1));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("VAGAS");
@@ -369,6 +363,8 @@ public class VagasEmpresa extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Preencha a faixa salarial da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (txtDescricao.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Preencha o descrição da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
+        } else if (txtEstado.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Preencha o estado da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (listaCompetencias.getSelectedValuesList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione ao menos uma competência!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
@@ -383,7 +379,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
             requisicao.put("nome", txtNomeVaga.getText());
             requisicao.put("faixaSalarial", Double.parseDouble(txtFaixaSalarial.getText().replaceAll(",", ".")));
             requisicao.put("descricao", txtDescricao.getText());
-            requisicao.put("estado", this.rbgEstado.getSelection().getActionCommand());
+            requisicao.put("estado", txtEstado.getText());
             requisicao.put("competencias", listaCompetencias.getSelectedValuesList());
             System.out.println("Cliente enviou: " + requisicao);
             SocketModel.getInstance().getOut().println(requisicao);
@@ -414,10 +410,9 @@ public class VagasEmpresa extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblTituloDialog;
     private javax.swing.JList<String> listaCompetencias;
-    private javax.swing.ButtonGroup rbgEstado;
-    private javax.swing.JRadioButton rbtnDisponivel;
     private javax.swing.JTable tblVagas;
     private javax.swing.JTextArea txtDescricao;
+    private javax.swing.JTextField txtEstado;
     private javax.swing.JFormattedTextField txtFaixaSalarial;
     private javax.swing.JTextField txtNomeVaga;
     // End of variables declaration//GEN-END:variables

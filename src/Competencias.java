@@ -37,7 +37,7 @@ public class Competencias extends javax.swing.JFrame {
                     switch (mensagem.getString("operacao")) {
                         case "visualizarCompetenciaExperiencia":
                             switch (mensagem.getInt("status")) {
-                                case 200:
+                                case 201:
                                     DefaultTableModel model = (DefaultTableModel) tblCompetencias.getModel();
                                     for (Object competenciaExperiencia : mensagem.getJSONArray("competenciaExperiencia")) {
                                         model.addRow(new String[]{
