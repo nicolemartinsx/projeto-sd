@@ -314,6 +314,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
         this.txtNomeVaga.setText(null);
         this.txtFaixaSalarial.setText(null);
         this.txtDescricao.setText(null);
+        this.txtEstado.setText(null);
         int[] indices = {};
         this.listaCompetencias.setSelectedIndices(indices);
         this.lblTituloDialog.setText("Adicionar vaga");
