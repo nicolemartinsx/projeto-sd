@@ -28,7 +28,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(VagasEmpresa.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
@@ -60,8 +60,11 @@ public class VagasEmpresa extends javax.swing.JFrame {
                                     this.atualizacao = true;
                                     this.txtFaixaSalarial.setText(String.valueOf(mensagem.getDouble("faixaSalarial")));
                                     this.txtDescricao.setText(mensagem.getString("descricao"));
-                                    this.txtEstado.setText(mensagem.getString("estado"));
-
+                                    if(mensagem.getString("estado").equals("divulgavel")){
+                                        this.cbEstado.setSelected(true);
+                                    }else{
+                                        this.cbEstado.setSelected(false);
+                                    }
                                     int[] indices = new int[mensagem.getJSONArray("competencias").length()];
                                     int counter = 0;
                                     for (int i = 0; i < this.listaCompetencias.getModel().getSize(); i++) {
@@ -155,7 +158,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
         listaCompetencias = new javax.swing.JList<>();
         btnCancelarDialog = new javax.swing.JButton();
         btnSalvarDialog = new javax.swing.JButton();
-        txtEstado = new javax.swing.JTextField();
+        cbEstado = new javax.swing.JCheckBox();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblVagas = new javax.swing.JTable();
@@ -224,7 +227,9 @@ public class VagasEmpresa extends javax.swing.JFrame {
             }
         });
         dialogo.getContentPane().add(btnSalvarDialog, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 470, -1, -1));
-        dialogo.getContentPane().add(txtEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 290, -1));
+
+        cbEstado.setText("Divulgavel");
+        dialogo.getContentPane().add(cbEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, -1, -1));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("VAGAS");
@@ -314,7 +319,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
         this.txtNomeVaga.setText(null);
         this.txtFaixaSalarial.setText(null);
         this.txtDescricao.setText(null);
-        this.txtEstado.setText(null);
+        this.cbEstado.setSelected(false);
         int[] indices = {};
         this.listaCompetencias.setSelectedIndices(indices);
         this.lblTituloDialog.setText("Adicionar vaga");
@@ -364,8 +369,6 @@ public class VagasEmpresa extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Preencha a faixa salarial da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (txtDescricao.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Preencha o descrição da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
-        } else if (txtEstado.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Preencha o estado da vaga!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else if (listaCompetencias.getSelectedValuesList().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Selecione ao menos uma competência!", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
@@ -380,7 +383,9 @@ public class VagasEmpresa extends javax.swing.JFrame {
             requisicao.put("nome", txtNomeVaga.getText());
             requisicao.put("faixaSalarial", Double.parseDouble(txtFaixaSalarial.getText().replaceAll(",", ".")));
             requisicao.put("descricao", txtDescricao.getText());
-            requisicao.put("estado", txtEstado.getText());
+            if (cbEstado.isSelected()) {
+                requisicao.put("estado", cbEstado.getText());
+            }
             requisicao.put("competencias", listaCompetencias.getSelectedValuesList());
             System.out.println("Cliente enviou: " + requisicao);
             SocketModel.getInstance().getOut().println(requisicao);
@@ -399,6 +404,7 @@ public class VagasEmpresa extends javax.swing.JFrame {
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnSalvarDialog;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.JCheckBox cbEstado;
     private javax.swing.JDialog dialogo;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -413,7 +419,6 @@ public class VagasEmpresa extends javax.swing.JFrame {
     private javax.swing.JList<String> listaCompetencias;
     private javax.swing.JTable tblVagas;
     private javax.swing.JTextArea txtDescricao;
-    private javax.swing.JTextField txtEstado;
     private javax.swing.JFormattedTextField txtFaixaSalarial;
     private javax.swing.JTextField txtNomeVaga;
     // End of variables declaration//GEN-END:variables

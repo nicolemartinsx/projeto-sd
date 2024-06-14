@@ -26,14 +26,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnPerfil" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnAtualizar" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnApagar" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnLogout" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnCompetencias" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnVagas" min="-2" pref="134" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="btnCandidatos" min="-2" pref="134" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnPerfil" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnAtualizar" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnApagar" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnLogout" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnCompetencias" alignment="0" max="32767" attributes="0"/>
+                      <Component id="btnVagas" min="-2" pref="134" max="-2" attributes="0"/>
+                      <Component id="btnLogados" alignment="0" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="46" max="32767" attributes="0"/>
           </Group>
@@ -51,12 +55,16 @@
               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Component id="btnVagas" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="btnCandidatos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnAtualizar" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnApagar" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnLogout" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="53" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Component id="btnLogados" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -113,6 +121,22 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVagasActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnCandidatos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Buscar candidatos"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCandidatosActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnLogados">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Usu&#xe1;rios logados"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLogadosActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

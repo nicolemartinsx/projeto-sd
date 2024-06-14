@@ -363,7 +363,7 @@ public class Server extends Thread {
                                                         if (competenciaRS.next()) {
                                                             JSONObject competenciaExperiencia = new JSONObject();
                                                             competenciaExperiencia.put("competencia", competenciaRS.getString("competencia"));
-                                                            competenciaExperiencia.put("experiencia", candidatoCompetenciaRS.getString("experiencia"));
+                                                            competenciaExperiencia.put("experiencia", candidatoCompetenciaRS.getInt("experiencia"));
                                                             competenciasExperiencias.put(competenciaExperiencia);
                                                         } else {
                                                             resposta.put("status", 422);

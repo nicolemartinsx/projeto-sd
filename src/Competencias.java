@@ -28,7 +28,7 @@ public class Competencias extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Competencias.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
@@ -40,9 +40,10 @@ public class Competencias extends javax.swing.JFrame {
                                 case 201:
                                     DefaultTableModel model = (DefaultTableModel) tblCompetencias.getModel();
                                     for (Object competenciaExperiencia : mensagem.getJSONArray("competenciaExperiencia")) {
+                                        int experiencia =((JSONObject) competenciaExperiencia).getInt("experiencia");
                                         model.addRow(new String[]{
                                             ((JSONObject) competenciaExperiencia).getString("competencia"),
-                                            ((JSONObject) competenciaExperiencia).getString("experiencia")}
+                                            (String.valueOf(experiencia))}
                                         );
                                     }
                                     break;

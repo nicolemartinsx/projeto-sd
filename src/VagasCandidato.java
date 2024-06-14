@@ -28,7 +28,7 @@ public class VagasCandidato extends javax.swing.JFrame {
                         break;
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(CadastroCandidato.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(VagasCandidato.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("Cliente recebeu: " + inputLine);
                 JSONObject mensagem = new JSONObject(inputLine);
