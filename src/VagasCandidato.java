@@ -42,10 +42,13 @@ public class VagasCandidato extends javax.swing.JFrame {
 
                                     DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
                                     for (Object vaga : this.vagas) {
-                                        model.addRow(new String[]{
-                                            String.valueOf(((JSONObject) vaga).getInt("idVaga")),
-                                            ((JSONObject) vaga).getString("nome")}
-                                        );
+                                        String estado = ((JSONObject) vaga).getString("estado").toString();
+                                        if (estado.equals("divulgavel")) {
+                                            model.addRow(new String[]{
+                                                String.valueOf(((JSONObject) vaga).getInt("idVaga")),
+                                                ((JSONObject) vaga).getString("nome")}
+                                            );
+                                        }
                                     }
                                     break;
 
@@ -90,10 +93,8 @@ public class VagasCandidato extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("VAGAS");
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel7.setText("Vagas");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, -1, -1));
 
         tblVagas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -127,18 +128,14 @@ public class VagasCandidato extends javax.swing.JFrame {
             tblVagas.getColumnModel().getColumn(1).setPreferredWidth(310);
         }
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, 370, 190));
-
         btnVoltar.setText("Voltar");
         btnVoltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnVoltarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnVoltar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 350, -1, -1));
 
         jLabel8.setText("Competencias (CTRL+Click)");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 60, -1, -1));
 
         listaCompetencias.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" };
@@ -151,21 +148,16 @@ public class VagasCandidato extends javax.swing.JFrame {
         listaCompetencias.setValueIsAdjusting(true);
         jScrollPane4.setViewportView(listaCompetencias);
 
-        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 240, 60));
-
         btnBuscar.setText("Buscar");
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 120, 110, -1));
 
-        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OR", "AND" }));
-        getContentPane().add(cmbTipo, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 80, 110, -1));
+        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ALL", "OR", "AND" }));
 
         jLabel1.setText("Tipo");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 60, -1, -1));
 
         btnVisualizar.setText("Visualizar");
         btnVisualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -173,7 +165,55 @@ public class VagasCandidato extends javax.swing.JFrame {
                 btnVisualizarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnVisualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 350, -1, -1));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(50, 50, 50)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnVoltar)
+                        .addGap(258, 258, 258)
+                        .addComponent(btnVisualizar)))
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jLabel7)
+                .addGap(14, 14, 14)
+                .addComponent(jLabel8)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel1)
+                        .addGap(4, 4, 4)
+                        .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnBuscar)))
+                .addGap(17, 17, 17)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnVoltar)
+                    .addComponent(btnVisualizar))
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
 
         pack();
         setLocationRelativeTo(null);
@@ -189,7 +229,7 @@ public class VagasCandidato extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Selecione ao menos uma competencia", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
         while (model.getRowCount() > 0) {
             model.removeRow(0);

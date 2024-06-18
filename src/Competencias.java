@@ -123,11 +123,6 @@ public class Competencias extends javax.swing.JFrame {
         jLabel4.setText("Experiência");
 
         txtExperienciaDialog.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txtExperienciaDialog.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtExperienciaDialogActionPerformed(evt);
-            }
-        });
 
         btnVoltarDialog.setText("Voltar");
         btnVoltarDialog.addActionListener(new java.awt.event.ActionListener() {
@@ -383,10 +378,6 @@ public class Competencias extends javax.swing.JFrame {
     private void btnVoltarDialogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarDialogActionPerformed
         this.dialogo.setVisible(false);
     }//GEN-LAST:event_btnVoltarDialogActionPerformed
-
-    private void txtExperienciaDialogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtExperienciaDialogActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtExperienciaDialogActionPerformed
 
     private void listarCompetenciaExperiencia() {
         DefaultTableModel model = (DefaultTableModel) tblCompetencias.getModel();

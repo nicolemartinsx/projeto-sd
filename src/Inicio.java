@@ -188,7 +188,7 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
-        btnLogados.setText("Usuários logados");
+        btnLogados.setText("Usuários online");
         btnLogados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLogadosActionPerformed(evt);
@@ -297,7 +297,8 @@ public class Inicio extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCandidatosActionPerformed
 
     private void btnLogadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogadosActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
+        new UsuariosOnline();
     }//GEN-LAST:event_btnLogadosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
