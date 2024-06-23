@@ -385,6 +385,8 @@ public class VagasEmpresa extends javax.swing.JFrame {
             requisicao.put("descricao", txtDescricao.getText());
             if (cbEstado.isSelected()) {
                 requisicao.put("estado", cbEstado.getText());
+            } else {
+                requisicao.put("estado", "Disponível");
             }
             requisicao.put("competencias", listaCompetencias.getSelectedValuesList());
             System.out.println("Cliente enviou: " + requisicao);

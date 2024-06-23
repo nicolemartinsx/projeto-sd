@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.json.JSONArray;
 
 public class Server extends Thread {
@@ -167,6 +168,7 @@ public class Server extends Thread {
                                     String token = UUID.randomUUID().toString();
                                     tokens.put(token, requisicao.getString("email"));
                                     resposta.put("token", token);
+                                    System.err.println("Candidato " + requisicao.getString("email") + " logado");
                                 } else {
                                     resposta.put("status", 401);
                                     resposta.put("mensagem", "Login ou senha incorretos");
@@ -189,6 +191,7 @@ public class Server extends Thread {
                                     String token = UUID.randomUUID().toString();
                                     tokens.put(token, requisicao.getString("email"));
                                     resposta.put("token", token);
+                                    System.err.println("Empresa " + requisicao.getString("email") + " logado");
                                 } else {
                                     resposta.put("status", 401);
                                     resposta.put("mensagem", "Login ou senha incorretos");
@@ -274,6 +277,64 @@ public class Server extends Thread {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "filtrarCandidatos":
+                        JSONObject filtrosCandidatos = requisicao.getJSONObject("filtros");
+                        boolean tipoAllCandidatos = filtrosCandidatos.getString("tipo").equals("ALL");
+                        boolean tipoAndCandidatos = filtrosCandidatos.getString("tipo").equals("AND");
+                        List<Object> filtroCompetenciasExperiencias = filtrosCandidatos.getJSONArray("competenciasExperiencias").toList();
+                        String sqlCandidatos = "SELECT DISTINCT c.id_candidato,c.nome,c.email FROM candidato c";
+                        if (!tipoAllCandidatos) {
+                            sqlCandidatos += " JOIN candidatocompetencia cc ON c.id_candidato = cc.id_candidato WHERE";
+                            sqlCandidatos += filtroCompetenciasExperiencias.stream().map((ce) -> " EXISTS(SELECT 1 FROM candidatocompetencia cc1 WHERE cc1.id_candidato=c.id_candidato AND cc1.id_competencia=(SELECT id_competencia FROM competencia WHERE competencia=?)AND cc1.experiencia>=?)").collect(Collectors.joining(tipoAndCandidatos ? "AND" : "OR"));
+                        }
+                        try (PreparedStatement candidatosPS = conn.prepareStatement(sqlCandidatos)) {
+                            int index = 1;
+                            for (Object competenciaExperiencia : filtroCompetenciasExperiencias) {
+                                candidatosPS.setString(index++, (String) ((HashMap) competenciaExperiencia).get("competencia"));
+                                candidatosPS.setInt(index++, (Integer) ((HashMap) competenciaExperiencia).get("experiencia"));
+                            }
+                            try (ResultSet candidatosRS = candidatosPS.executeQuery()) {
+                                JSONArray candidatos = new JSONArray();
+                                while (candidatosRS.next()) {
+                                    JSONObject candidato = new JSONObject();
+                                    candidato.put("idCandidato", candidatosRS.getInt("id_candidato"));
+                                    candidato.put("nome", candidatosRS.getString("nome"));
+                                    candidato.put("email", candidatosRS.getString("email"));
+                                    JSONArray competenciasExperiencias = new JSONArray();
+                                    try (PreparedStatement candidatoCompetenciaPS = conn.prepareStatement("SELECT id_competencia, experiencia FROM candidatocompetencia where id_candidato = ?;")) {
+                                        candidatoCompetenciaPS.setInt(1, candidatosRS.getInt("id_candidato"));
+                                        try (ResultSet candidatoCompetenciaRS = candidatoCompetenciaPS.executeQuery()) {
+                                            while (candidatoCompetenciaRS.next()) {
+                                                try (PreparedStatement competenciaPS = conn.prepareStatement("SELECT competencia FROM competencia where id_competencia = ?;")) {
+                                                    competenciaPS.setInt(1, candidatoCompetenciaRS.getInt("id_competencia"));
+                                                    try (ResultSet competenciaRS = competenciaPS.executeQuery()) {
+                                                        if (competenciaRS.next()) {
+                                                            JSONObject competenciaExperiencia = new JSONObject();
+                                                            competenciaExperiencia.put("competencia", competenciaRS.getString("competencia"));
+                                                            competenciaExperiencia.put("experiencia", candidatoCompetenciaRS.getInt("experiencia"));
+                                                            competenciasExperiencias.put(competenciaExperiencia);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            resposta.put("status", 201);
+                                            resposta.put("competenciaExperiencia", competenciasExperiencias);
+                                        }
+                                    }
+                                    candidato.put("competenciaExperiencia", competenciasExperiencias);
+
+                                    candidatos.put(candidato);
+                                }
+                                resposta.put("status", 201);
+                                resposta.put("candidatos", candidatos);
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
                             resposta.put("mensagem", "Erro");
                         }
                         break;
@@ -569,11 +630,17 @@ public class Server extends Thread {
 
                     case "filtrarVagas":
                         JSONObject filtros = requisicao.getJSONObject("filtros");
+                        boolean tipoTodos = filtros.getString("tipo").equals("ALL");
                         boolean tipoIgual = filtros.getString("tipo").equals("AND");
                         List<Object> filtroCompetencias = filtros.getJSONArray("competencias").toList();
-                        String sql = "SELECT v.id_vaga, v.nome, v.faixa_salarial, v.descricao, v.estado FROM vaga v JOIN vagacompetencia vc ON v.id_vaga=vc.id_vaga JOIN competencia c ON vc.id_competencia=c.id_competencia WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ") GROUP BY v.id_vaga";
-                        if (tipoIgual) {
-                            sql += " HAVING COUNT(vc.id_vaga_competencia) >= ?";
+                        String sql = "SELECT DISTINCT v.id_vaga, v.nome, v.faixa_salarial, v.descricao, v.estado FROM vaga v JOIN vagacompetencia vc ON v.id_vaga=vc.id_vaga JOIN competencia c ON vc.id_competencia=c.id_competencia";
+                        if (!tipoTodos) {
+                            sql += " WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ") AND estado = 'Divulgavel' GROUP BY v.id_vaga";
+                            if (tipoIgual) {
+                                sql += " HAVING COUNT(vc.id_vaga_competencia) >= ?";
+                            }
+                        } else {
+                            sql += " AND estado = 'Divulgavel'";
                         }
                         try (PreparedStatement vagasPS = conn.prepareStatement(sql)) {
                             int index = 1;
@@ -761,6 +828,56 @@ public class Server extends Thread {
                                 resposta.put("mensagem", "Vaga apagada com sucesso");
                             }
 
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 422);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "enviarMensagem":
+                        try (PreparedStatement empresaPS = conn.prepareStatement("SELECT id_empresa FROM empresa WHERE email = ?;")) {
+                            empresaPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet empresaRS = empresaPS.executeQuery()) {
+                                if (empresaRS.next()) {
+                                    JSONArray candidatos = requisicao.getJSONArray("candidatos");
+                                    for (int i = 0; i < candidatos.length(); i++) {
+                                        Integer idCandidato = (Integer) candidatos.get(i);
+                                        try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO candidatomensagem (id_candidato, id_empresa) VALUES (?, ?);")) {
+                                            preparedStatement.setInt(1, idCandidato);
+                                            preparedStatement.setInt(2, empresaRS.getInt("id_empresa"));
+                                            preparedStatement.executeUpdate();
+                                        }
+                                    }
+                                    resposta.put("status", 201);
+                                } else {
+                                    resposta.put("status", 422);
+                                    resposta.put("mensagem", "Empresa não encontrada");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            resposta.put("status", 404);
+                            resposta.put("mensagem", "Erro");
+                        }
+                        break;
+
+                    case "receberMensagem":
+                        try (PreparedStatement mensagemPS = conn.prepareStatement("SELECT DISTINCT e.razao_social AS empresa FROM candidatomensagem AS cm JOIN empresa AS e ON cm.id_empresa=e.id_empresa WHERE cm.id_candidato=(SELECT id_candidato FROM candidato WHERE email=?);")) {
+                            mensagemPS.setString(1, requisicao.getString("email"));
+                            try (ResultSet mensagemRS = mensagemPS.executeQuery()) {
+                                try (PreparedStatement apagarPS = conn.prepareStatement("DELETE FROM candidatomensagem WHERE id_candidato=(SELECT id_candidato FROM candidato WHERE email=?);")) {
+                                    apagarPS.setString(1, requisicao.getString("email"));
+                                    apagarPS.executeUpdate();
+
+                                    JSONArray empresas = new JSONArray();
+                                    while (mensagemRS.next()) {
+                                        empresas.put(mensagemRS.getString("empresa"));
+                                    }
+                                    resposta.put("status", 201);
+                                    resposta.put("empresas", empresas);
+                                }
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             resposta.put("status", 422);

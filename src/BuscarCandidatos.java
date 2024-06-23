@@ -1,19 +1,20 @@
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 public class BuscarCandidatos extends javax.swing.JFrame {
 
     private JSONArray candidatos = null;
-    
+
     public BuscarCandidatos() {
         this.setVisible(true);
 
@@ -42,12 +43,28 @@ public class BuscarCandidatos extends javax.swing.JFrame {
                                     this.candidatos = mensagem.getJSONArray("candidatos");
 
                                     DefaultTableModel model = (DefaultTableModel) tblCandidatos.getModel();
+                                    model.setRowCount(0);
+                                    model.fireTableDataChanged();
                                     for (Object candidato : this.candidatos) {
                                         model.addRow(new String[]{
                                             String.valueOf(((JSONObject) candidato).getInt("idCandidato")),
-                                            ((JSONObject) candidato).getString("nome")}
+                                            ((JSONObject) candidato).getString("nome"),
+                                            ((JSONObject) candidato).getString("email")}
                                         );
                                     }
+                                    break;
+
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+
+                            }
+                            break;
+
+                        case "enviarMensagem":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    JOptionPane.showMessageDialog(null, "Mensagem enviada!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                                     break;
 
                                 default:
@@ -67,7 +84,7 @@ public class BuscarCandidatos extends javax.swing.JFrame {
 
         initComponents();
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -87,14 +104,24 @@ public class BuscarCandidatos extends javax.swing.JFrame {
         btnVoltar = new javax.swing.JButton();
         btnVisualizar = new javax.swing.JButton();
         btnMensagem = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        listaCompetencias = new javax.swing.JList<>();
+        cbCompetencia1 = new javax.swing.JComboBox<>();
+        txtExperiencia1 = new javax.swing.JSpinner();
+        txtExperiencia4 = new javax.swing.JSpinner();
+        cbCompetencia4 = new javax.swing.JComboBox<>();
+        txtExperiencia2 = new javax.swing.JSpinner();
+        cbCompetencia2 = new javax.swing.JComboBox<>();
+        txtExperiencia5 = new javax.swing.JSpinner();
+        cbCompetencia5 = new javax.swing.JComboBox<>();
+        cbCompetencia3 = new javax.swing.JComboBox<>();
+        txtExperiencia3 = new javax.swing.JSpinner();
+        cbCompetencia6 = new javax.swing.JComboBox<>();
+        txtExperiencia6 = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel7.setText("Candidatos");
 
-        jLabel8.setText("Competencias");
+        jLabel8.setText("Competencia/Experiência");
 
         jLabel1.setText("Tipo");
 
@@ -112,14 +139,14 @@ public class BuscarCandidatos extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Nome"
+                "ID", "Nome", "Email"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -132,6 +159,9 @@ public class BuscarCandidatos extends javax.swing.JFrame {
         });
         tblCandidatos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         jScrollPane3.setViewportView(tblCandidatos);
+        if (tblCandidatos.getColumnModel().getColumnCount() > 0) {
+            tblCandidatos.getColumnModel().getColumn(0).setMaxWidth(36);
+        }
 
         btnVoltar.setText("Voltar");
         btnVoltar.addActionListener(new java.awt.event.ActionListener() {
@@ -154,16 +184,35 @@ public class BuscarCandidatos extends javax.swing.JFrame {
             }
         });
 
-        listaCompetencias.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        listaCompetencias.setToolTipText("Selecione");
-        listaCompetencias.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        listaCompetencias.setLayoutOrientation(javax.swing.JList.HORIZONTAL_WRAP);
-        listaCompetencias.setValueIsAdjusting(true);
-        jScrollPane4.setViewportView(listaCompetencias);
+        cbCompetencia1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
+        cbCompetencia1.setSelectedItem(null);
+
+        txtExperiencia1.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        txtExperiencia4.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        cbCompetencia4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
+        cbCompetencia4.setSelectedItem(null);
+
+        txtExperiencia2.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        cbCompetencia2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
+        cbCompetencia2.setSelectedItem(null);
+
+        txtExperiencia5.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        cbCompetencia5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
+        cbCompetencia5.setSelectedItem(null);
+
+        cbCompetencia3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
+        cbCompetencia3.setSelectedItem(null);
+
+        txtExperiencia3.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
+
+        cbCompetencia6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Python", "C#", "C++", "JS", "PHP", "Swift", "Java", "Go", "SQL", "Ruby", "HTML", "CSS", "NOSQL", "Flutter", "TypeScript", "Perl", "Cobol", "dotNet", "Kotlin", "Dart" }));
+        cbCompetencia6.setSelectedItem(null);
+
+        txtExperiencia6.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -171,28 +220,42 @@ public class BuscarCandidatos extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVoltar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnMensagem)
-                        .addGap(27, 27, 27)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnVisualizar))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel7)
-                                    .addComponent(jLabel8))
-                                .addGap(164, 164, 164))
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(35, 35, 35)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                                    .addComponent(cbCompetencia1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExperiencia1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbCompetencia4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExperiencia4, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(cbCompetencia2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExperiencia2, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbCompetencia5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExperiencia5, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(12, 12, 12)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cbCompetencia3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExperiencia3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cbCompetencia6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExperiencia6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnBuscar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbTipo, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,43 +264,122 @@ public class BuscarCandidatos extends javax.swing.JFrame {
                 .addComponent(jLabel7)
                 .addGap(14, 14, 14)
                 .addComponent(jLabel8)
-                .addGap(9, 9, 9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(61, 61, 61)
-                                .addComponent(btnBuscar)))))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnVisualizar)
-                    .addComponent(btnVoltar)
-                    .addComponent(btnMensagem))
+                                .addComponent(cbCompetencia1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExperiencia1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbCompetencia4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExperiencia4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cbCompetencia2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExperiencia2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbCompetencia5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExperiencia5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(40, 40, 40)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnVisualizar)
+                            .addComponent(btnVoltar)
+                            .addComponent(btnMensagem)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cbCompetencia3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel1))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtExperiencia3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cbCompetencia6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtExperiencia6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscar))))
                 .addGap(28, 30, Short.MAX_VALUE))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-
-        DefaultTableModel model = (DefaultTableModel) tblCandidatos.getModel();
-        while (model.getRowCount() > 0) {
-            model.removeRow(0);
+        String tipo = cmbTipo.getSelectedItem().toString();
+        if (tipo.equals("ALL")) {
+            cbCompetencia1.setSelectedItem(null);
+            txtExperiencia1.setValue(0);
+            cbCompetencia2.setSelectedItem(null);
+            txtExperiencia2.setValue(0);
+            cbCompetencia3.setSelectedItem(null);
+            txtExperiencia3.setValue(0);
+            cbCompetencia4.setSelectedItem(null);
+            txtExperiencia4.setValue(0);
+            cbCompetencia5.setSelectedItem(null);
+            txtExperiencia5.setValue(0);
+            cbCompetencia6.setSelectedItem(null);
+            txtExperiencia6.setValue(0);
+        } else if (cbCompetencia1.getSelectedItem() == null && cbCompetencia2.getSelectedItem() == null && cbCompetencia3.getSelectedItem() == null && cbCompetencia4.getSelectedItem() == null && cbCompetencia5.getSelectedItem() == null && cbCompetencia6.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(null, "Selecione ao menos uma competencia", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "filtrarCandidatos");
         requisicao.put("token", AuthenticationModel.getInstance().getToken());
         JSONObject filtros = new JSONObject();
-        filtros.put("tipo", cmbTipo.getSelectedItem().toString());
-        filtros.put("competencias", listaCompetencias.getSelectedValuesList());
-        //experiencia??
+        JSONArray competenciasExperiencias = new JSONArray();
+
+        if (cbCompetencia1.getSelectedItem() != null && txtExperiencia1.getValue() != null) {
+            JSONObject competenciaExperiencia = new JSONObject();
+            competenciaExperiencia.put("competencia", cbCompetencia1.getSelectedItem().toString());
+            competenciaExperiencia.put("experiencia", (Integer) txtExperiencia1.getValue());
+            competenciasExperiencias.put(competenciaExperiencia);
+        }
+        if (cbCompetencia2.getSelectedItem() != null && txtExperiencia2.getValue() != null) {
+            JSONObject competenciaExperiencia = new JSONObject();
+            competenciaExperiencia.put("competencia", cbCompetencia2.getSelectedItem().toString());
+            competenciaExperiencia.put("experiencia", (Integer) txtExperiencia2.getValue());
+            competenciasExperiencias.put(competenciaExperiencia);
+        }
+        if (cbCompetencia3.getSelectedItem() != null && txtExperiencia3.getValue() != null) {
+            JSONObject competenciaExperiencia = new JSONObject();
+            competenciaExperiencia.put("competencia", cbCompetencia3.getSelectedItem().toString());
+            competenciaExperiencia.put("experiencia", (Integer) txtExperiencia3.getValue());
+            competenciasExperiencias.put(competenciaExperiencia);
+        }
+        if (cbCompetencia4.getSelectedItem() != null && txtExperiencia4.getValue() != null) {
+            JSONObject competenciaExperiencia = new JSONObject();
+            competenciaExperiencia.put("competencia", cbCompetencia4.getSelectedItem().toString());
+            competenciaExperiencia.put("experiencia", (Integer) txtExperiencia4.getValue());
+            competenciasExperiencias.put(competenciaExperiencia);
+        }
+        if (cbCompetencia5.getSelectedItem() != null && txtExperiencia5.getValue() != null) {
+            JSONObject competenciaExperiencia = new JSONObject();
+            competenciaExperiencia.put("competencia", cbCompetencia5.getSelectedItem().toString());
+            competenciaExperiencia.put("experiencia", (Integer) txtExperiencia5.getValue());
+            competenciasExperiencias.put(competenciaExperiencia);
+        }
+        if (cbCompetencia6.getSelectedItem() != null && txtExperiencia6.getValue() != null) {
+            JSONObject competenciaExperiencia = new JSONObject();
+            competenciaExperiencia.put("competencia", cbCompetencia6.getSelectedItem().toString());
+            competenciaExperiencia.put("experiencia", (Integer) txtExperiencia6.getValue());
+            competenciasExperiencias.put(competenciaExperiencia);
+        }
+
+        filtros.put("tipo", tipo);
+        filtros.put("competenciasExperiencias", competenciasExperiencias);
         requisicao.put("filtros", filtros);
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
@@ -258,11 +400,11 @@ public class BuscarCandidatos extends javax.swing.JFrame {
         for (int i = 0; i < candidatos.length(); i++) {
             JSONObject candidato = candidatos.getJSONObject(i);
             if (candidato.getInt("idCandidato") == idCandidato) {
-                JSONArray competencias = candidato.getJSONArray("competencias");
+                JSONArray competenciasExperiencias = candidato.getJSONArray("competenciaExperiencia");
                 JOptionPane.showMessageDialog(null,
-                    "Nome: " + candidato.getString("nome") + "\n"
-                    + "Competências: " + competencias.join(", ")
-                        //experiencia?
+                        "Nome: " + candidato.getString("nome") + "\n"
+                        + "Email: " + candidato.getString("email") + "\n"
+                        + competenciasExperiencias.toList().stream().map((competenciaExperiencia) -> "Competência: " + ((HashMap) competenciaExperiencia).get("competencia") + ", Experiência: " + ((HashMap) competenciaExperiencia).get("experiencia")).collect(Collectors.joining("\n"))
                 );
                 break;
             }
@@ -270,13 +412,23 @@ public class BuscarCandidatos extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVisualizarActionPerformed
 
     private void btnMensagemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensagemActionPerformed
+        if (this.tblCandidatos.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione uma ou mais linha na tabela", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "enviarMensagem");
         requisicao.put("token", AuthenticationModel.getInstance().getToken());
-        JSONObject candidatos = new JSONObject();
-       // candidatos.put("idCandidato", tblCandidatos.get);
-       //enviar os idCandidatos selecionados
-        requisicao.put("candidatos", candidatos);
+        requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+        JSONArray idsCandidatos = new JSONArray();
+
+        for (int selectedRow : this.tblCandidatos.getSelectedRows()) {
+            int idCandidato = Integer.parseInt(this.tblCandidatos.getValueAt(selectedRow, 0).toString());
+            idsCandidatos.put(idCandidato);
+        }
+
+        requisicao.put("candidatos", idsCandidatos);
         System.out.println("Cliente enviou: " + requisicao);
         SocketModel.getInstance().getOut().println(requisicao);
     }//GEN-LAST:event_btnMensagemActionPerformed
@@ -322,13 +474,23 @@ public class BuscarCandidatos extends javax.swing.JFrame {
     private javax.swing.JButton btnMensagem;
     private javax.swing.JButton btnVisualizar;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.JComboBox<String> cbCompetencia1;
+    private javax.swing.JComboBox<String> cbCompetencia2;
+    private javax.swing.JComboBox<String> cbCompetencia3;
+    private javax.swing.JComboBox<String> cbCompetencia4;
+    private javax.swing.JComboBox<String> cbCompetencia5;
+    private javax.swing.JComboBox<String> cbCompetencia6;
     private javax.swing.JComboBox<String> cmbTipo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JList<String> listaCompetencias;
     private javax.swing.JTable tblCandidatos;
+    private javax.swing.JSpinner txtExperiencia1;
+    private javax.swing.JSpinner txtExperiencia2;
+    private javax.swing.JSpinner txtExperiencia3;
+    private javax.swing.JSpinner txtExperiencia4;
+    private javax.swing.JSpinner txtExperiencia5;
+    private javax.swing.JSpinner txtExperiencia6;
     // End of variables declaration//GEN-END:variables
 }

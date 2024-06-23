@@ -26,20 +26,18 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnCandidatos" min="-2" pref="134" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnPerfil" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnAtualizar" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnApagar" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnLogout" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnCompetencias" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btnVagas" min="-2" pref="134" max="-2" attributes="0"/>
-                      <Component id="btnLogados" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCandidatos" max="32767" attributes="0"/>
+                  <Component id="btnVagas" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnCompetencias" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnPerfil" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnAtualizar" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnApagar" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnLogout" alignment="0" max="32767" attributes="0"/>
+                  <Component id="btnLogados" alignment="0" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace pref="46" max="32767" attributes="0"/>
+              <EmptySpace pref="40" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

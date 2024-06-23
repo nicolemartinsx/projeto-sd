@@ -1,10 +1,13 @@
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Inicio extends javax.swing.JFrame {
@@ -99,6 +102,22 @@ public class Inicio extends javax.swing.JFrame {
                             new Login();
                             break;
 
+                        case "receberMensagem":
+                            switch (mensagem.getInt("status")) {
+                                case 201:
+                                    List<Object> empresas = mensagem.getJSONArray("empresas").toList();
+                                    if (!empresas.isEmpty()) {
+                                        JOptionPane.showMessageDialog(null, "Por favor entre em contato com a(s) empresa(s): " + empresas.stream().map((e) -> e.toString()).collect(Collectors.joining(", ")));
+                                    }
+                                    break;
+
+                                default:
+                                    JOptionPane.showMessageDialog(null, mensagem.getString("mensagem"), "Erro", JOptionPane.ERROR_MESSAGE);
+                                    break;
+
+                            }
+                            break;
+
                         default:
                             System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
                             break;
@@ -109,9 +128,18 @@ public class Inicio extends javax.swing.JFrame {
 
         initComponents();
 
-        if (!AuthenticationModel.getInstance().getCandidato()) {
-            this.btnCompetencias.setVisible(false);
+        // TODO
+        this.btnLogados.setVisible(false);
+        if (AuthenticationModel.getInstance().getCandidato()) {
             this.btnCandidatos.setVisible(false);
+            JSONObject requisicao = new JSONObject();
+            requisicao.put("operacao", "receberMensagem");
+            requisicao.put("email", AuthenticationModel.getInstance().getEmail());
+            requisicao.put("token", AuthenticationModel.getInstance().getToken());
+            System.out.println("Cliente enviou: " + requisicao);
+            SocketModel.getInstance().getOut().println(requisicao);
+        } else {
+            this.btnCompetencias.setVisible(false);
         }
     }
 
@@ -201,18 +229,17 @@ public class Inicio extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnCandidatos, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel2)
-                        .addComponent(btnPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnApagar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCompetencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnVagas, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnLogados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2)
+                    .addComponent(btnCandidatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnVagas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnCompetencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnApagar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnLogados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

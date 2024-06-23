@@ -64,4 +64,13 @@ CREATE TABLE vagacompetencia (
     FOREIGN KEY (id_competencia) REFERENCES competencia(id_competencia) ON DELETE CASCADE
 );
 
+CREATE TABLE candidatomensagem (
+  id INT NOT NULL AUTO_INCREMENT,
+  id_candidato INT NOT NULL,
+  id_empresa INT NOT NULL,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_candidato) REFERENCES candidato(id_candidato) ON DELETE CASCADE,
+  FOREIGN KEY (id_empresa) REFERENCES empresa(id_empresa) ON DELETE CASCADE
+);
+
 INSERT INTO competencia (competencia) VALUES ('Python'), ('C#'), ('C++'), ('JS'), ('PHP'), ('Swift'), ('Java'), ('Go'), ('SQL'), ('Ruby'), ('HTML'), ('CSS'), ('NOSQL'), ('Flutter'), ('TypeScript'), ('Perl'), ('Cobol'), ('dotNet'), ('Kotlin'), ('Dart');

@@ -41,14 +41,13 @@ public class VagasCandidato extends javax.swing.JFrame {
                                     this.vagas = mensagem.getJSONArray("vagas");
 
                                     DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
+                                    model.setRowCount(0);
+                                    model.fireTableDataChanged();
                                     for (Object vaga : this.vagas) {
-                                        String estado = ((JSONObject) vaga).getString("estado").toString();
-                                        if (estado.equals("divulgavel")) {
-                                            model.addRow(new String[]{
-                                                String.valueOf(((JSONObject) vaga).getInt("idVaga")),
-                                                ((JSONObject) vaga).getString("nome")}
-                                            );
-                                        }
+                                        model.addRow(new String[]{
+                                            String.valueOf(((JSONObject) vaga).getInt("idVaga")),
+                                            ((JSONObject) vaga).getString("nome")}
+                                        );
                                     }
                                     break;
 
@@ -197,22 +196,21 @@ public class VagasCandidato extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jLabel8)
                 .addGap(4, 4, 4)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
                         .addComponent(jLabel1)
                         .addGap(4, 4, 4)
                         .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnBuscar)))
+                        .addComponent(btnBuscar))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnVoltar)
                     .addComponent(btnVisualizar))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
@@ -225,15 +223,15 @@ public class VagasCandidato extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        if (this.listaCompetencias.getSelectedIndices().length == 0) {
+        String tipo = cmbTipo.getSelectedItem().toString();
+        if (tipo.equals("ALL")) {
+            int[] indices = {};
+            listaCompetencias.setSelectedIndices(indices);
+        } else if (this.listaCompetencias.getSelectedIndices().length == 0) {
             JOptionPane.showMessageDialog(null, "Selecione ao menos uma competencia", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        DefaultTableModel model = (DefaultTableModel) tblVagas.getModel();
-        while (model.getRowCount() > 0) {
-            model.removeRow(0);
-        }
+        
         JSONObject requisicao = new JSONObject();
         requisicao.put("operacao", "filtrarVagas");
         requisicao.put("token", AuthenticationModel.getInstance().getToken());
