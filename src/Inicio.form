@@ -35,7 +35,6 @@
                   <Component id="btnAtualizar" alignment="0" max="32767" attributes="0"/>
                   <Component id="btnApagar" alignment="0" max="32767" attributes="0"/>
                   <Component id="btnLogout" alignment="0" max="32767" attributes="0"/>
-                  <Component id="btnLogados" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="40" max="32767" attributes="0"/>
           </Group>
@@ -60,9 +59,7 @@
               <Component id="btnApagar" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="btnLogout" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnLogados" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="23" max="32767" attributes="0"/>
+              <EmptySpace pref="58" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -127,14 +124,6 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCandidatosActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="btnLogados">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Usu&#xe1;rios online"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLogadosActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

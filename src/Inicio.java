@@ -1,13 +1,13 @@
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Inicio extends javax.swing.JFrame {
@@ -107,7 +107,10 @@ public class Inicio extends javax.swing.JFrame {
                                 case 201:
                                     List<Object> empresas = mensagem.getJSONArray("empresas").toList();
                                     if (!empresas.isEmpty()) {
-                                        JOptionPane.showMessageDialog(null, "Por favor entre em contato com a(s) empresa(s): " + empresas.stream().map((e) -> e.toString()).collect(Collectors.joining(", ")));
+                                        JOptionPane.showMessageDialog(null, "Por favor entre em contato com a(s) empresa(s):\n\n" + empresas.stream().map((e) -> {
+                                            HashMap empresa = (HashMap) e;
+                                            return "Nome: " + empresa.get("nome") + "\nEmail: " + empresa.get("email") + "\nRamo: " + empresa.get("ramo");
+                                        }).collect(Collectors.joining("\n\n")));
                                     }
                                     break;
 
@@ -117,10 +120,6 @@ public class Inicio extends javax.swing.JFrame {
 
                             }
                             break;
-
-                        default:
-                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                            break;
                     }
                 });
             }
@@ -128,8 +127,6 @@ public class Inicio extends javax.swing.JFrame {
 
         initComponents();
 
-        // TODO
-        this.btnLogados.setVisible(false);
         if (AuthenticationModel.getInstance().getCandidato()) {
             this.btnCandidatos.setVisible(false);
             JSONObject requisicao = new JSONObject();
@@ -160,7 +157,6 @@ public class Inicio extends javax.swing.JFrame {
         btnCompetencias = new javax.swing.JButton();
         btnVagas = new javax.swing.JButton();
         btnCandidatos = new javax.swing.JButton();
-        btnLogados = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("HOME");
@@ -216,13 +212,6 @@ public class Inicio extends javax.swing.JFrame {
             }
         });
 
-        btnLogados.setText("Usuários online");
-        btnLogados.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogadosActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -237,8 +226,7 @@ public class Inicio extends javax.swing.JFrame {
                     .addComponent(btnPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAtualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnApagar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLogados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -260,9 +248,7 @@ public class Inicio extends javax.swing.JFrame {
                 .addComponent(btnApagar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnLogout)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnLogados)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
 
         pack();
@@ -323,17 +309,11 @@ public class Inicio extends javax.swing.JFrame {
         new BuscarCandidatos();
     }//GEN-LAST:event_btnCandidatosActionPerformed
 
-    private void btnLogadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogadosActionPerformed
-        this.dispose();
-        new UsuariosOnline();
-    }//GEN-LAST:event_btnLogadosActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnApagar;
     private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnCandidatos;
     private javax.swing.JButton btnCompetencias;
-    private javax.swing.JButton btnLogados;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnPerfil;
     private javax.swing.JButton btnVagas;

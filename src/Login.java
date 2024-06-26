@@ -50,10 +50,6 @@ public class Login extends javax.swing.JFrame {
 
                             }
                             break;
-
-                        default:
-                            System.err.println("Cliente recebeu operação não registrada: " + mensagem.getString("operacao"));
-                            break;
                     }
                 });
             }

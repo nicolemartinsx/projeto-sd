@@ -634,13 +634,14 @@ public class Server extends Thread {
                         boolean tipoIgual = filtros.getString("tipo").equals("AND");
                         List<Object> filtroCompetencias = filtros.getJSONArray("competencias").toList();
                         String sql = "SELECT DISTINCT v.id_vaga, v.nome, v.faixa_salarial, v.descricao, v.estado FROM vaga v JOIN vagacompetencia vc ON v.id_vaga=vc.id_vaga JOIN competencia c ON vc.id_competencia=c.id_competencia";
+                        String divulgavelSql = " AND estado IN('Divulgavel', 'Divulgável', 'divulgavel', 'divulgável')";
                         if (!tipoTodos) {
-                            sql += " WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ") AND estado = 'Divulgavel' GROUP BY v.id_vaga";
+                            sql += " WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ") AND " + divulgavelSql + " GROUP BY v.id_vaga";
                             if (tipoIgual) {
                                 sql += " HAVING COUNT(vc.id_vaga_competencia) >= ?";
                             }
                         } else {
-                            sql += " AND estado = 'Divulgavel'";
+                            sql += divulgavelSql;
                         }
                         try (PreparedStatement vagasPS = conn.prepareStatement(sql)) {
                             int index = 1;
@@ -863,7 +864,7 @@ public class Server extends Thread {
                         break;
 
                     case "receberMensagem":
-                        try (PreparedStatement mensagemPS = conn.prepareStatement("SELECT DISTINCT e.razao_social AS empresa FROM candidatomensagem AS cm JOIN empresa AS e ON cm.id_empresa=e.id_empresa WHERE cm.id_candidato=(SELECT id_candidato FROM candidato WHERE email=?);")) {
+                        try (PreparedStatement mensagemPS = conn.prepareStatement("SELECT DISTINCT e.razao_social as nome, e.email, e.ramo FROM candidatomensagem AS cm JOIN empresa AS e ON cm.id_empresa=e.id_empresa WHERE cm.id_candidato=(SELECT id_candidato FROM candidato WHERE email=?);")) {
                             mensagemPS.setString(1, requisicao.getString("email"));
                             try (ResultSet mensagemRS = mensagemPS.executeQuery()) {
                                 try (PreparedStatement apagarPS = conn.prepareStatement("DELETE FROM candidatomensagem WHERE id_candidato=(SELECT id_candidato FROM candidato WHERE email=?);")) {
@@ -872,7 +873,11 @@ public class Server extends Thread {
 
                                     JSONArray empresas = new JSONArray();
                                     while (mensagemRS.next()) {
-                                        empresas.put(mensagemRS.getString("empresa"));
+                                        JSONObject empresa = new JSONObject();
+                                        empresa.put("nome", mensagemRS.getString("nome"));
+                                        empresa.put("email", mensagemRS.getString("email"));
+                                        empresa.put("ramo", mensagemRS.getString("ramo"));
+                                        empresas.put(empresa);
                                     }
                                     resposta.put("status", 201);
                                     resposta.put("empresas", empresas);
