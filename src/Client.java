@@ -1,5 +1,6 @@
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,7 +91,8 @@ public class Client extends javax.swing.JFrame {
 
     private void btnAvancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancarActionPerformed
         try {
-            Socket server = new Socket(txtIP.getText(), Integer.parseInt(txtPorta.getText()));
+            Socket server = new Socket();
+            server.connect(new InetSocketAddress(txtIP.getText(), Integer.parseInt(txtPorta.getText())), 3000);
             server.setSoTimeout(50);
             SocketModel.getInstance().setSocket(server);
             this.dispose();

@@ -168,7 +168,7 @@ public class Server extends Thread {
                                     String token = UUID.randomUUID().toString();
                                     tokens.put(token, requisicao.getString("email"));
                                     resposta.put("token", token);
-                                    System.err.println("Candidato " + requisicao.getString("email") + " logado");
+                                    System.err.println("Usuário " + requisicao.getString("email") + " logado");
                                 } else {
                                     resposta.put("status", 401);
                                     resposta.put("mensagem", "Login ou senha incorretos");
@@ -191,7 +191,7 @@ public class Server extends Thread {
                                     String token = UUID.randomUUID().toString();
                                     tokens.put(token, requisicao.getString("email"));
                                     resposta.put("token", token);
-                                    System.err.println("Empresa " + requisicao.getString("email") + " logado");
+                                    System.err.println("Usuário " + requisicao.getString("email") + " logado");
                                 } else {
                                     resposta.put("status", 401);
                                     resposta.put("mensagem", "Login ou senha incorretos");
@@ -205,6 +205,7 @@ public class Server extends Thread {
                         break;
 
                     case "logout":
+                        System.err.println("Usuário " + tokens.get(requisicao.getString("token")) + " deslogado");
                         tokens.remove(requisicao.getString("token"));
                         resposta.put("status", 204);
                         break;
@@ -631,13 +632,13 @@ public class Server extends Thread {
                     case "filtrarVagas":
                         JSONObject filtros = requisicao.getJSONObject("filtros");
                         boolean tipoTodos = filtros.getString("tipo").equals("ALL");
-                        boolean tipoIgual = filtros.getString("tipo").equals("AND");
+                        boolean tipoAnd = filtros.getString("tipo").equals("AND");
                         List<Object> filtroCompetencias = filtros.getJSONArray("competencias").toList();
                         String sql = "SELECT DISTINCT v.id_vaga, v.nome, v.faixa_salarial, v.descricao, v.estado FROM vaga v JOIN vagacompetencia vc ON v.id_vaga=vc.id_vaga JOIN competencia c ON vc.id_competencia=c.id_competencia";
                         String divulgavelSql = " AND estado IN('Divulgavel', 'Divulgável', 'divulgavel', 'divulgável')";
                         if (!tipoTodos) {
-                            sql += " WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ") AND " + divulgavelSql + " GROUP BY v.id_vaga";
-                            if (tipoIgual) {
+                            sql += " WHERE c.competencia IN(" + String.join(",", Collections.nCopies(filtroCompetencias.size(), "?")) + ")" + divulgavelSql + " GROUP BY v.id_vaga";
+                            if (tipoAnd) {
                                 sql += " HAVING COUNT(vc.id_vaga_competencia) >= ?";
                             }
                         } else {
@@ -648,7 +649,7 @@ public class Server extends Thread {
                             for (Object competencia : filtroCompetencias) {
                                 vagasPS.setString(index++, (String) competencia);
                             }
-                            if (tipoIgual) {
+                            if (tipoAnd) {
                                 vagasPS.setInt(index, filtroCompetencias.size());
                             }
                             try (ResultSet vagasRS = vagasPS.executeQuery()) {
@@ -682,6 +683,7 @@ public class Server extends Thread {
                             resposta.put("mensagem", "Erro");
                         }
                         break;
+
 
                     case "visualizarVaga":
                         try (PreparedStatement vagasPS = conn.prepareStatement("SELECT faixa_salarial, descricao, estado FROM vaga where id_vaga = ?;")) {
